@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera Class Functions and atribiutes &mdash; baslerPylon 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Collector Class Functions" href="Collector_src.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            baslerPylon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">subjects:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_start.html">Fast Getting start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manage%D9%80device%D9%80by%D9%80Collector.html">Manage cameras by Collector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_emulation.html">Camera Emulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_information.html">Access camera information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_parms.html">Camera parameters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">sources:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Collector_src.html">Collector Class Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Camera Class Functions and atribiutes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.Collector"><code class="docutils literal notranslate"><span class="pre">Collector</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.enable_camera_emulation"><code class="docutils literal notranslate"><span class="pre">Collector.enable_camera_emulation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.get_all_cameras"><code class="docutils literal notranslate"><span class="pre">Collector.get_all_cameras()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.get_all_serials"><code class="docutils literal notranslate"><span class="pre">Collector.get_all_serials()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.get_available_devices"><code class="docutils literal notranslate"><span class="pre">Collector.get_available_devices()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.get_camera_by_serial"><code class="docutils literal notranslate"><span class="pre">Collector.get_camera_by_serial()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Collector.listDevices"><code class="docutils literal notranslate"><span class="pre">Collector.listDevices()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.Camera"><code class="docutils literal notranslate"><span class="pre">Camera</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.build_converter"><code class="docutils literal notranslate"><span class="pre">Camera.build_converter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.build_zero_image"><code class="docutils literal notranslate"><span class="pre">Camera.build_zero_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.getPictures"><code class="docutils literal notranslate"><span class="pre">Camera.getPictures()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.reset"><code class="docutils literal notranslate"><span class="pre">Camera.reset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.search_in_nodes"><code class="docutils literal notranslate"><span class="pre">Camera.search_in_nodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.Camera.software_trige_exec"><code class="docutils literal notranslate"><span class="pre">Camera.software_trige_exec()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.CameraInfo"><code class="docutils literal notranslate"><span class="pre">CameraInfo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.get_class"><code class="docutils literal notranslate"><span class="pre">CameraInfo.get_class()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.get_model"><code class="docutils literal notranslate"><span class="pre">CameraInfo.get_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.get_serialnumber"><code class="docutils literal notranslate"><span class="pre">CameraInfo.get_serialnumber()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.is_GigE"><code class="docutils literal notranslate"><span class="pre">CameraInfo.is_GigE()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.is_PRO"><code class="docutils literal notranslate"><span class="pre">CameraInfo.is_PRO()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraInfo.is_USB"><code class="docutils literal notranslate"><span class="pre">CameraInfo.is_USB()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.CameraParms"><code class="docutils literal notranslate"><span class="pre">CameraParms</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.availble_node_values"><code class="docutils literal notranslate"><span class="pre">CameraParms.availble_node_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.availble_triggerselector_values"><code class="docutils literal notranslate"><span class="pre">CameraParms.availble_triggerselector_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.availble_triggersource_values"><code class="docutils literal notranslate"><span class="pre">CameraParms.availble_triggersource_values()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_exposureTime"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_exposureTime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_gain"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_gain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_node"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_roi"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_trigger_mode"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_trigger_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.get_trigger_option"><code class="docutils literal notranslate"><span class="pre">CameraParms.get_trigger_option()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_all_parms"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_all_parms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_exposureTime"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_exposureTime()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_gain"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_gain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_node"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_roi"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_roi()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_transportlayer"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_transportlayer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_trigger_off"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_trigger_off()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_trigger_on"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_trigger_on()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraParms.set_trigger_option"><code class="docutils literal notranslate"><span class="pre">CameraParms.set_trigger_option()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.CameraStatus"><code class="docutils literal notranslate"><span class="pre">CameraStatus</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraStatus.get_tempreture"><code class="docutils literal notranslate"><span class="pre">CameraStatus.get_tempreture()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraStatus.is_grabbing"><code class="docutils literal notranslate"><span class="pre">CameraStatus.is_grabbing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraStatus.is_open"><code class="docutils literal notranslate"><span class="pre">CameraStatus.is_open()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraStatus.is_trigger_on"><code class="docutils literal notranslate"><span class="pre">CameraStatus.is_trigger_on()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dorsaPylon.CameraOperations"><code class="docutils literal notranslate"><span class="pre">CameraOperations</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraOperations.close"><code class="docutils literal notranslate"><span class="pre">CameraOperations.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraOperations.open"><code class="docutils literal notranslate"><span class="pre">CameraOperations.open()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraOperations.start_grabbing"><code class="docutils literal notranslate"><span class="pre">CameraOperations.start_grabbing()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dorsaPylon.CameraOperations.stop_grabbing"><code class="docutils literal notranslate"><span class="pre">CameraOperations.stop_grabbing()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">baslerPylon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Camera Class Functions and atribiutes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Camera_src.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="camera-class-functions-and-atribiutes">
+<h1>Camera Class Functions and atribiutes<a class="headerlink" href="#camera-class-functions-and-atribiutes" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.Collector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">Collector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Collector" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.enable_camera_emulation">
+<span class="sig-name descname"><span class="pre">enable_camera_emulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Collector.enable_camera_emulation" title="Permalink to this definition"></a></dt>
+<dd><p>enable camera emulation device for testing and developing purpose</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>count</strong> (<em>int</em>) – number of emulation device</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.get_all_cameras">
+<span class="sig-name descname"><span class="pre">get_all_cameras</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">dorsaPylon.Camera</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.Collector.get_all_cameras" title="Permalink to this definition"></a></dt>
+<dd><p>return list of available devices</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cameras</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">get_all_cameras</span><span class="p">(</span><span class="n">CamersClass</span><span class="o">.</span><span class="n">gige</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>camera_class</strong> (<em>_type_</em><em>, </em><em>optional</em>) – filter devices by camera class like Gige or USB.</p></li>
+<li><p><strong>flags</strong> (<em>- you can use CamersClass.*</em>) – </p></li>
+<li><p><strong>None</strong> (<em>- if be</em>) – </p></li>
+<li><p><strong>None.</strong> (<em>return all cameras in diffrents class. Defaults to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of cameras in determined class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera">Camera</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.get_all_serials">
+<span class="sig-name descname"><span class="pre">get_all_serials</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.Collector.get_all_serials" title="Permalink to this definition"></a></dt>
+<dd><p>return list of serialnumber of available cameras</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.get_available_devices">
+<span class="sig-name descname"><span class="pre">get_available_devices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">dorsaPylon.Camera</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.Collector.get_available_devices" title="Permalink to this definition"></a></dt>
+<dd><p>return list of available devices
+.. rubric:: Examples</p>
+<p>return all gige devices
+&gt;&gt;&gt; founded = collector.get_available_devices(CamersClass.gige)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>camera_class</strong> (<em>_type_</em><em>, </em><em>optional</em>) – filter devices by camera class like Gige or USB.</p></li>
+<li><p><strong>CamersClass.*</strong> (<em>- it could be</em>) – </p></li>
+<li><p><strong>None</strong> (<em>- if be</em>) – </p></li>
+<li><p><strong>None.</strong> (<em>return all devices in diffrents class. Defaults to</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of devices in determined class</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[pyplone.device]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.get_camera_by_serial">
+<span class="sig-name descname"><span class="pre">get_camera_by_serial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">serial_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">Camera</span></a></span></span><a class="headerlink" href="#dorsaPylon.Collector.get_camera_by_serial" title="Permalink to this definition"></a></dt>
+<dd><p>get a camera by its serial number</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>serial_number</strong> (<em>str</em>) – serial number of camera</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera">Camera</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Collector.listDevices">
+<span class="sig-name descname"><span class="pre">listDevices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Collector.listDevices" title="Permalink to this definition"></a></dt>
+<dd><p>print information of available devices</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.Camera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">Camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">InstantCamera</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Camera" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.build_converter">
+<span class="sig-name descname"><span class="pre">build_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixel_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Camera.build_converter" title="Permalink to this definition"></a></dt>
+<dd><p>build a converter to determine the pixel type like RGB or MONO8</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.build_zero_image">
+<span class="sig-name descname"><span class="pre">build_zero_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Camera.build_zero_image" title="Permalink to this definition"></a></dt>
+<dd><p>return a zero image with the dimensions of the camera image</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.getPictures">
+<span class="sig-name descname"><span class="pre">getPictures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grabResult</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_when_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'zero'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="headerlink" href="#dorsaPylon.Camera.getPictures" title="Permalink to this definition"></a></dt>
+<dd><p>return an image if camera caReturns an image if the camera has captured an image</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grabResult</strong> (<em>_type_</em><em>, </em><em>optional</em>) – grabResult of camera. generally used for event. Defaults to None.</p></li>
+<li><p><strong>img_when_error</strong> (<em>str</em><em>, </em><em>optional</em>) – determine what returns when the captured image got an error. Defaults to ‘zero’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>captured image</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Camera.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset all camera settings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.search_in_nodes">
+<span class="sig-name descname"><span class="pre">search_in_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">keywords</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.Camera.search_in_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>search in camera nodes by one or more keywords to find your intended feature</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of nodes name that contains keywords</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[Str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.Camera.software_trige_exec">
+<span class="sig-name descname"><span class="pre">software_trige_exec</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.Camera.software_trige_exec" title="Permalink to this definition"></a></dt>
+<dd><p>execute software trigger</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">CameraInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">Camera</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraInfo" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.get_class">
+<span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.get_class" title="Permalink to this definition"></a></dt>
+<dd><p>return calas of camera in <cite>Str</cite> type like BaslerGigE and BaslerUSB</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.get_model">
+<span class="sig-name descname"><span class="pre">get_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.get_model" title="Permalink to this definition"></a></dt>
+<dd><p>return model of camera in <cite>Str</cite> type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.get_serialnumber">
+<span class="sig-name descname"><span class="pre">get_serialnumber</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.get_serialnumber" title="Permalink to this definition"></a></dt>
+<dd><p>return serial number of camera in <cite>Str</cite> type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.is_GigE">
+<span class="sig-name descname"><span class="pre">is_GigE</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.is_GigE" title="Permalink to this definition"></a></dt>
+<dd><p>return True if camera is GigE class</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.is_PRO">
+<span class="sig-name descname"><span class="pre">is_PRO</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.is_PRO" title="Permalink to this definition"></a></dt>
+<dd><p>return True if camera is Pro model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraInfo.is_USB">
+<span class="sig-name descname"><span class="pre">is_USB</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraInfo.is_USB" title="Permalink to this definition"></a></dt>
+<dd><p>return True if camera is USB class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">CameraParms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">Camera</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraParms" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.availble_node_values">
+<span class="sig-name descname"><span class="pre">availble_node_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraParms.availble_node_values" title="Permalink to this definition"></a></dt>
+<dd><p>returns list of available values for specific node by its name
+.. rubric:: Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">availble_node_values</span><span class="p">(</span><span class="s1">&#39;ExposureMode&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="s1">&#39;Timed&#39;</span><span class="p">,)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_name</strong> (<em>str</em>) – node name. you can find it by search in camera nodes using</p></li>
+<li><p><strong>method</strong> (<em>`Camera.search_in_nodes `</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.availble_triggerselector_values">
+<span class="sig-name descname"><span class="pre">availble_triggerselector_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.availble_triggerselector_values" title="Permalink to this definition"></a></dt>
+<dd><p>return avaible value for TriggerSelector node of camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>avaible value for TriggerSelector node of camera</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.availble_triggersource_values">
+<span class="sig-name descname"><span class="pre">availble_triggersource_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.availble_triggersource_values" title="Permalink to this definition"></a></dt>
+<dd><p>return avaible value for TriggerSource node of camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>avaible value for TriggerSource node of camera</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_exposureTime">
+<span class="sig-name descname"><span class="pre">get_exposureTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.get_exposureTime" title="Permalink to this definition"></a></dt>
+<dd><p>get ExposureTime of camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_gain">
+<span class="sig-name descname"><span class="pre">get_gain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.get_gain" title="Permalink to this definition"></a></dt>
+<dd><p>get gain of camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_node">
+<span class="sig-name descname"><span class="pre">get_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraParms.get_node" title="Permalink to this definition"></a></dt>
+<dd><p>get value of specefic node by its name
+.. rubric:: Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">230</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_name</strong> (<em>str</em>) – node name. you can find it by search in camera nodes using</p></li>
+<li><p><strong>method</strong> (<em>`Camera.search_in_nodes `</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>value of node</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_roi">
+<span class="sig-name descname"><span class="pre">get_roi</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.get_roi" title="Permalink to this definition"></a></dt>
+<dd><p>return roi parameters of camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>offset_x, offset_y, h, w</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[ int, int, int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_trigger_mode">
+<span class="sig-name descname"><span class="pre">get_trigger_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.get_trigger_mode" title="Permalink to this definition"></a></dt>
+<dd><p>return trigger mode value (<cite>On</cite> or <cite>Off</cite>)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.get_trigger_option">
+<span class="sig-name descname"><span class="pre">get_trigger_option</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.get_trigger_option" title="Permalink to this definition"></a></dt>
+<dd><p>return values of TriggerSource and TriggerSelector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>source, selector</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_all_parms">
+<span class="sig-name descname"><span class="pre">set_all_parms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigge_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trigge_selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraParms.set_all_parms" title="Permalink to this definition"></a></dt>
+<dd><p>Set commonly used parameters at once
+** If any parameter is set to <cite>None</cite>, that parameter will not be set on the camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_exposureTime">
+<span class="sig-name descname"><span class="pre">set_exposureTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exposure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_exposureTime" title="Permalink to this definition"></a></dt>
+<dd><p>set ExposureTime of camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_gain">
+<span class="sig-name descname"><span class="pre">set_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_gain" title="Permalink to this definition"></a></dt>
+<dd><p>set gain of camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_node">
+<span class="sig-name descname"><span class="pre">set_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraParms.set_node" title="Permalink to this definition"></a></dt>
+<dd><p>set value to specefic node by its name
+.. rubric:: Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_node</span><span class="p">(</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">,</span> <span class="mi">230</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_name</strong> (<em>str</em>) – node name. you can find it by search in camera nodes using</p></li>
+<li><p><strong>method</strong> (<em>`Camera.search_in_nodes `</em>) – </p></li>
+<li><p><strong>value</strong> (<em>_type_</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_roi">
+<span class="sig-name descname"><span class="pre">set_roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_roi" title="Permalink to this definition"></a></dt>
+<dd><p>set roi of camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>height</strong> (<em>int</em>) – height of camera</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – width of camera</p></li>
+<li><p><strong>offset_x</strong> (<em>int</em>) – </p></li>
+<li><p><strong>offset_y</strong> (<em>int</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_transportlayer">
+<span class="sig-name descname"><span class="pre">set_transportlayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">packet_delay</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">packet_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_transportlayer" title="Permalink to this definition"></a></dt>
+<dd><p>set packet_delay and packet_size of camera</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>packet_delay</strong> (<em>int</em>) – </p></li>
+<li><p><strong>packet_size</strong> (<em>int</em><em>, </em><em>optional</em>) – Defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_trigger_off">
+<span class="sig-name descname"><span class="pre">set_trigger_off</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_trigger_off" title="Permalink to this definition"></a></dt>
+<dd><p>trun trigger <cite>Off</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_trigger_on">
+<span class="sig-name descname"><span class="pre">set_trigger_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_trigger_on" title="Permalink to this definition"></a></dt>
+<dd><p>trun trigger <cite>On</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraParms.set_trigger_option">
+<span class="sig-name descname"><span class="pre">set_trigger_option</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FrameStart'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dorsaPylon.CameraParms.set_trigger_option" title="Permalink to this definition"></a></dt>
+<dd><p>setup trigger option ( trigger source and trigger selector)
+.. rubric:: Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_trigger_option</span><span class="p">(</span><span class="n">Trigger</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">software</span><span class="p">,</span> <span class="n">Trigger</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">frame_start</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>str</em>) – source of trigger
+Trigger.source.software
+Trigger.hardware_line1</p></li>
+<li><p><strong>selector</strong> (<em>_type_</em><em>, </em><em>optional</em>) – trigger selector. Defaults to Trigger.selector.frame_start.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.CameraStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">CameraStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">Camera</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraStatus" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraStatus.get_tempreture">
+<span class="sig-name descname"><span class="pre">get_tempreture</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#dorsaPylon.CameraStatus.get_tempreture" title="Permalink to this definition"></a></dt>
+<dd><p>return device tempreture</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>device tempreture</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraStatus.is_grabbing">
+<span class="sig-name descname"><span class="pre">is_grabbing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraStatus.is_grabbing" title="Permalink to this definition"></a></dt>
+<dd><p>return True if camera is grabbing</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraStatus.is_open">
+<span class="sig-name descname"><span class="pre">is_open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraStatus.is_open" title="Permalink to this definition"></a></dt>
+<dd><p>return True if camera be open</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraStatus.is_trigger_on">
+<span class="sig-name descname"><span class="pre">is_trigger_on</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#dorsaPylon.CameraStatus.is_trigger_on" title="Permalink to this definition"></a></dt>
+<dd><p>return True if trigger be On</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dorsaPylon.CameraOperations">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dorsaPylon.</span></span><span class="sig-name descname"><span class="pre">CameraOperations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dorsaPylon.Camera" title="dorsaPylon.Camera"><span class="pre">Camera</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraOperations" title="Permalink to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraOperations.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraOperations.close" title="Permalink to this definition"></a></dt>
+<dd><p>close camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraOperations.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraOperations.open" title="Permalink to this definition"></a></dt>
+<dd><p>Open camera</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraOperations.start_grabbing">
+<span class="sig-name descname"><span class="pre">start_grabbing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraOperations.start_grabbing" title="Permalink to this definition"></a></dt>
+<dd><p>start grabbing. it is necessary for capture image.
+- If the camera is not open, this function will do it automatically</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>strategy</strong> (<em>_type_</em><em>, </em><em>optional</em>) – strategy of grabbing image. Defaults to pylon.GrabStrategy_LatestImageOnly.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dorsaPylon.CameraOperations.stop_grabbing">
+<span class="sig-name descname"><span class="pre">stop_grabbing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#dorsaPylon.CameraOperations.stop_grabbing" title="Permalink to this definition"></a></dt>
+<dd><p>stop grabbing</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Collector_src.html" class="btn btn-neutral float-left" title="Collector Class Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, amirhossein malekzadeh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

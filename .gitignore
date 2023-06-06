@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+
+examples/__pycache__/
+*.py[cod]
+
+examples/dorsaPylon.py
+examples/PylonFlags.py

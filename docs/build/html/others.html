@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>others atribiute &mdash; baslerPylon 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Collector Class Functions" href="Collector_src.html" />
+    <link rel="prev" title="Camera Status" href="camera_status.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            baslerPylon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">subjects:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_start.html">Getting start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manage%D9%80device%D9%80by%D9%80Collector.html">Manage cameras by Collector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_emulation.html">Camera Emulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_information.html">Access camera information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_parms.html">Camera parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_status.html">Camera Status</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">others atribiute</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#build-zero-image">build_zero_image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-converter">build_converter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-sources">more sources</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">sources:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Collector_src.html">Collector Class Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera_src.html">Camera Class Functions and atribiutes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">baslerPylon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">others atribiute</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/others.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="others-atribiute">
+<h1>others atribiute<a class="headerlink" href="#others-atribiute" title="Permalink to this heading"></a></h1>
+<section id="build-zero-image">
+<h2>build_zero_image<a class="headerlink" href="#build-zero-image" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">build_zero_image</span></code> method of <code class="docutils literal notranslate"><span class="pre">Camera</span></code> returns a zero image the same size as the camera image</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">img</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">build_zero_image</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="build-converter">
+<h2>build_converter<a class="headerlink" href="#build-converter" title="Permalink to this heading"></a></h2>
+<p>If you need to change the colorspace of the camera’s images, for example when you work with mono color cameras,
+you can change the camera pixelType using the <code class="docutils literal notranslate"><span class="pre">build_converter</span></code> function. For convenience, you can use the built-in flags in the <code class="docutils literal notranslate"><span class="pre">PixelType</span></code> class for the function argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#set pixeltype of camera gray 8bit</span>
+<span class="n">camera1</span><span class="o">.</span><span class="n">build_converter</span><span class="p">(</span><span class="n">pixel_type</span><span class="o">=</span><span class="n">dorsaPylon</span><span class="o">.</span><span class="n">PixelType</span><span class="o">.</span><span class="n">GRAY8</span><span class="p">)</span>
+<span class="n">gray_img</span> <span class="o">=</span> <span class="n">camera1</span><span class="o">.</span><span class="n">getPictures</span><span class="p">()</span>
+
+<span class="c1">#set pixeltype of camera gray 8bit</span>
+<span class="n">camera1</span><span class="o">.</span><span class="n">build_converter</span><span class="p">(</span><span class="n">pixel_type</span><span class="o">=</span><span class="n">dorsaPylon</span><span class="o">.</span><span class="n">PixelType</span><span class="o">.</span><span class="n">BGR8</span><span class="p">)</span>
+<span class="n">bgr_img</span> <span class="o">=</span> <span class="n">camera1</span><span class="o">.</span><span class="n">getPictures</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;gray image shape is&#39;</span><span class="p">,</span> <span class="n">gray_img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;bgr image shape is&#39;</span><span class="p">,</span> <span class="n">bgr_img</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gray image shape is (1200,1920)
+$ bgr image shape is (1200,1920,3)
+</pre></div>
+</div>
+</section>
+<section id="more-sources">
+<h2>more sources<a class="headerlink" href="#more-sources" title="Permalink to this heading"></a></h2>
+<p>for more information see
+<a class="reference internal" href="Camera_src.html"><span class="doc">Camera Class Functions and atribiutes</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="camera_status.html" class="btn btn-neutral float-left" title="Camera Status" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Collector_src.html" class="btn btn-neutral float-right" title="Collector Class Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, amirhossein malekzadeh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

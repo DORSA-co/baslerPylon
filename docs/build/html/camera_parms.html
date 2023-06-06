@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera parameters &mdash; baslerPylon 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Collector Class Functions" href="Collector_src.html" />
+    <link rel="prev" title="Access camera information" href="camera_information.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            baslerPylon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">subjects:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_start.html">Fast Getting start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manage%D9%80device%D9%80by%D9%80Collector.html">Manage cameras by Collector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_emulation.html">Camera Emulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_information.html">Access camera information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Camera parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#parms-class">Parms Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-specific-nodes">Advanced: specific nodes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#set-custom-node">set custom node</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#search-node">search node</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#more-sources">more sources</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">sources:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Collector_src.html">Collector Class Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera_src.html">Camera Class Functions and atribiutes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">baslerPylon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Camera parameters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/camera_parms.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="camera-parameters">
+<h1>Camera parameters<a class="headerlink" href="#camera-parameters" title="Permalink to this heading"></a></h1>
+<section id="parms-class">
+<h2>Parms Class<a class="headerlink" href="#parms-class" title="Permalink to this heading"></a></h2>
+<p>You can access to all parametes of camera (such as gain and exposure) using <code class="docutils literal notranslate"><span class="pre">Parms</span></code> atribiute of <code class="docutils literal notranslate"><span class="pre">Camera</span></code> class.
+This attribute includes three main function categories:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_****</span></code> methods. These methods are used to set the value of a parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_****</span></code> methods. These methods are used to get the value of a parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">availble_****</span></code> methods. These methods return the allowed values for a parameter</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you set the parameter value outside the allowed limit, a warning will be printed and the value of that parameter will be set to the minimum or maximum value depending on the value you entered.</p>
+</div>
+<p>lets see some exmaples. in first step lets connect to the first camera
+.. code-block:: python</p>
+<blockquote>
+<div><p>import dorsaPylon
+from dorsaPylon import Collector</p>
+<p>collector = Collector()
+camera = collector.get_all_cameras(camera_class=None)[0]</p>
+</div></blockquote>
+<p><strong>exmaple1: gain</strong>
+in this example we set the gain of camera and read value from camera</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#set the gain 50</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_gain</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1">#read gain value from camera</span>
+<span class="n">gain</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">get_gain</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gain is </span><span class="si">{</span><span class="n">gain</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gain is 50
+</pre></div>
+</div>
+<p><strong>exmaple2: exposure</strong>
+in this example we set the exposure of camera and read value from camera</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#set the gain 50</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_exposureTime</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span>
+
+<span class="c1">#read gain value from camera</span>
+<span class="n">exposure</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">get_exposureTime</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;exposure is </span><span class="si">{</span><span class="n">exposure</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ exposure is 2000
+</pre></div>
+</div>
+<p><strong>exmaple3: trigger</strong>
+lets work with camera trigger options</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#turn On trigger</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_trigger_on</span><span class="p">()</span>
+
+<span class="c1">#get trigger mode is &#39;On&#39; or &#39;Off&#39;</span>
+<span class="n">trigger_mode</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">get_trigger_mode</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;trgigger is </span><span class="si">{</span><span class="n">trigger_mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ trgigger is On
+</pre></div>
+</div>
+<p>now lets see avialble values for trgigger source of your camera
+.. code-block:: python</p>
+<blockquote>
+<div><p>#get possible value that can be set fot trigger selector
+possible_triggersource_value = camera.Parms.availble_triggersource_values()</p>
+<p>print(f’possible trigger source values are:{possible_triggersource_value}’)</p>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ possible trigger source values are:(&#39;Software&#39;,)
+</pre></div>
+</div>
+<p>now setup trigger options</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#set trigger source software</span>
+<span class="c1">#trigger selector value defualt is frame_start</span>
+<span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_trigger_option</span><span class="p">(</span><span class="n">dorsaPylon</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">software</span><span class="p">,</span>
+                             <span class="n">dorsaPylon</span><span class="o">.</span><span class="n">Trigger</span><span class="o">.</span><span class="n">selector</span><span class="o">.</span><span class="n">frame_start</span>
+                             <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-specific-nodes">
+<h2>Advanced: specific nodes<a class="headerlink" href="#advanced-specific-nodes" title="Permalink to this heading"></a></h2>
+<p>Some cameras have features that may not be included in this library. In this section, we are going to explain how to set these parameters or actually nodes</p>
+<section id="set-custom-node">
+<h3>set custom node<a class="headerlink" href="#set-custom-node" title="Permalink to this heading"></a></h3>
+<p>To set a custom parameter, you need to know its node name. If you do not know the name of the parameter on your camera, you can use the search tool in the next section</p>
+<p>You can set the value of a parameter using the <code class="docutils literal notranslate"><span class="pre">set_node</span></code> method of <code class="docutils literal notranslate"><span class="pre">Parms</span></code> class .
+This function receives two inputs. The first argument is the name of the parameter or node and the second argument is the desired value for that parameter.</p>
+<p>lets see example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">set_node</span><span class="p">(</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">,</span> <span class="mi">195</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You also can get the value of a parameter using the <code class="docutils literal notranslate"><span class="pre">get_node</span></code> method of <code class="docutils literal notranslate"><span class="pre">Parms</span></code> class.
+This function receives node’s name as argument and return value of node</p>
+<p>lets see example</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gain</span> <span class="o">=</span> <span class="n">cam1</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="s1">&#39;GainRaw&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;gain is </span><span class="si">{</span><span class="n">gain</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ gain is 195
+</pre></div>
+</div>
+<p>If the value of the parameter is set with predefined strings, such as exposureMode, which takes two values, <code class="docutils literal notranslate"><span class="pre">On</span></code> and <code class="docutils literal notranslate"><span class="pre">off</span></code>,
+You can get the allowed values using the method <code class="docutils literal notranslate"><span class="pre">availble_node_values</span></code> method of <code class="docutils literal notranslate"><span class="pre">Parms</span></code> class.
+This function receives node’s name as argument and return a list of possible value for that node</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">node_name</span> <span class="o">=</span> <span class="s1">&#39;ExposureMode&#39;</span>
+
+<span class="c1">#get possible value for node ExposureMode</span>
+<span class="n">possible_values</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Parms</span><span class="o">.</span><span class="n">availble_node_values</span><span class="p">(</span><span class="n">node_name</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;possible value for </span><span class="si">{</span><span class="n">node_name</span><span class="si">}</span><span class="s1"> is: </span><span class="si">{</span><span class="n">possible_values</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ possible values for ExposureMode are: (&#39;Timed&#39;,)
+</pre></div>
+</div>
+</section>
+<section id="search-node">
+<h3>search node<a class="headerlink" href="#search-node" title="Permalink to this heading"></a></h3>
+<p>If you need to set a node but don’t know its exact name, you can use the <code class="docutils literal notranslate"><span class="pre">search_in_nodes(*keywords)</span></code> method to find your desired feature( node ) in your specific camera.
+this function gets one or more keywords in the <code class="docutils literal notranslate"><span class="pre">str</span></code> type and returns all nodes in your camera that contain these keywords.</p>
+<p>in this example, we want to find all features of the camera that are related to the <code class="docutils literal notranslate"><span class="pre">gain</span></code> keyword.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nodes_name</span> <span class="o">=</span> <span class="n">cam1</span><span class="o">.</span><span class="n">search_in_nodes</span><span class="p">(</span><span class="s1">&#39;gain&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes_name</span><span class="p">)</span><span class="si">}</span><span class="s1"> nodes founded&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;first nodes name is </span><span class="si">{</span><span class="n">nodes_name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ 3 nodes founded
+$ first nodes name is GainRaw
+</pre></div>
+</div>
+</section>
+</section>
+<section id="more-sources">
+<h2>more sources<a class="headerlink" href="#more-sources" title="Permalink to this heading"></a></h2>
+<p>for more information see
+<a class="reference internal" href="Camera_src.html"><span class="doc">Camera Class Functions and atribiutes</span></a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="camera_information.html" class="btn btn-neutral float-left" title="Access camera information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Collector_src.html" class="btn btn-neutral float-right" title="Collector Class Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, amirhossein malekzadeh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

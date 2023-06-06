@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage cameras by Collector &mdash; baslerPylon 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Camera Emulation" href="camera_emulation.html" />
+    <link rel="prev" title="Getting start" href="getting_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            baslerPylon
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">subjects:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_start.html">Getting start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Manage cameras by Collector</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#collector-class">Collector class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-all-cameras">get all Cameras</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-all-cameras-in-specific-class">get all Cameras in specific class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-camera-by-its-serial-number">get camera by its serial number</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#more-sources">more sources</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="camera_emulation.html">Camera Emulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_information.html">Access camera information</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_parms.html">Camera parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_status.html">Camera Status</a></li>
+<li class="toctree-l1"><a class="reference internal" href="camera_operations.html">Camera Operations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">sources:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Collector_src.html">Collector Class Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Camera_src.html">Camera Class Functions and atribiutes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">baslerPylon</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Manage cameras by Collector</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/manageـdeviceـbyـCollector.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="manage-cameras-by-collector">
+<h1>Manage cameras by Collector<a class="headerlink" href="#manage-cameras-by-collector" title="Permalink to this heading"></a></h1>
+<section id="collector-class">
+<h2>Collector class<a class="headerlink" href="#collector-class" title="Permalink to this heading"></a></h2>
+<p>You can manage cameras using <code class="docutils literal notranslate"><span class="pre">Collector</span></code> class. So for the first step you need to create an instance of this class</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dorsaPylon</span>
+<span class="kn">from</span> <span class="nn">dorsaPylon</span> <span class="kn">import</span> <span class="n">Collector</span>
+
+<span class="n">collector</span> <span class="o">=</span> <span class="n">Collector</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="get-all-cameras">
+<h2>get all Cameras<a class="headerlink" href="#get-all-cameras" title="Permalink to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">get_all_cameras</span></code> function to get all connected cameras. this functions return a list
+of <cite>Camera</cite> objects</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#get all avialble cameras</span>
+<span class="n">all_cameras</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">get_all_cameras</span><span class="p">(</span><span class="n">camera_class</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_cameras</span><span class="p">)</span><span class="si">}</span><span class="s1"> devices founded&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ 2 devices founded
+</pre></div>
+</div>
+</section>
+<section id="get-all-cameras-in-specific-class">
+<h2>get all Cameras in specific class<a class="headerlink" href="#get-all-cameras-in-specific-class" title="Permalink to this heading"></a></h2>
+<p>You can also filter cameras by their class using the <code class="docutils literal notranslate"><span class="pre">camera_class</span></code> argument, such as Gige and USB. If set this argument <code class="docutils literal notranslate"><span class="pre">None</span></code>, this function returns all cameras in different classes</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#get all avialble cameras That Are GigE</span>
+<span class="n">gige_cameras</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">get_all_cameras</span><span class="p">(</span><span class="n">camera_class</span><span class="o">=</span><span class="n">dorsaPylon</span><span class="o">.</span><span class="n">CamersClass</span><span class="o">.</span><span class="n">gige</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="get-camera-by-its-serial-number">
+<h2>get camera by its serial number<a class="headerlink" href="#get-camera-by-its-serial-number" title="Permalink to this heading"></a></h2>
+<p>You can get a camera based on its serial number by using the A function</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#Receive camera with serial number</span>
+<span class="n">camera</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">get_camera_by_serial</span><span class="p">(</span><span class="s1">&#39;123456&#39;</span><span class="p">)</span>
+
+<span class="c1">#read serial number from camra</span>
+<span class="n">serial</span> <span class="o">=</span> <span class="n">camera</span><span class="o">.</span><span class="n">Infos</span><span class="o">.</span><span class="n">get_serialnumber</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;camera&#39;s serial number is </span><span class="si">{</span><span class="n">camera</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cameras serial number is 123456
+</pre></div>
+</div>
+<section id="more-sources">
+<h3>more sources<a class="headerlink" href="#more-sources" title="Permalink to this heading"></a></h3>
+<p><a class="reference internal" href="Collector_src.html"><span class="doc">Collector Class Functions</span></a></p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="getting_start.html" class="btn btn-neutral float-left" title="Getting start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="camera_emulation.html" class="btn btn-neutral float-right" title="Camera Emulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, amirhossein malekzadeh.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
