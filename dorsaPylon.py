@@ -47,10 +47,6 @@ class ErrorAndWarnings:
     @staticmethod
     def no_devices():
         return "ERROR: No Devices founded"
-    
-    @staticmethod
-    def not_grabbing():
-        return "ERROR: Camera is not Grabbing"
 
     @staticmethod
     def not_in_range(name, min_v, max_v):
@@ -72,10 +68,14 @@ class ErrorAndWarnings:
     def reset():
         return f"WARNING: camera reset! you should creat Camera Object again !!"
     
+    @staticmethod
     def not_grabbing():
         return "ERROR: camera isn't grabbing. Start Grabbing First!"
 
-
+    @staticmethod
+    def node_not_avaiable():
+        return 'predefine node not available, please set node by its name'
+    
 
 
 
@@ -112,13 +112,23 @@ class Camera:
 
         
         self.converter = self.build_converter(PixelType.BGR8)
+        self.nodes_name = self.get_available_nodes()
         self.timeout = 5000
+        self.image = None
 
+    def get_available_nodes(self,):
+        nodeMap = self.camera_device.GetNodeMap()
+        nodes = nodeMap.GetNodes()
+        return list(map(lambda x:x.Node.Name, nodes))
+
+
+    def is_node_available(self, node_name):
+        return node_name in self.nodes_name
     
     def reset(self,):
         """Reset all camera settings
         """
-        cam1.camera_device.DeviceReset()
+        self.camera_device.DeviceReset()
         print(ErrorAndWarnings.reset())
         
     def search_in_nodes(self, *keywords) -> list[str]:
@@ -186,26 +196,30 @@ class Camera:
             np.ndarray: captured image
         """
         res_img = None
-        #-------------------------------------------------------------
-        if grabResult is None:
-            if self.Status.is_grabbing():
-                grabResult = self.camera_device.RetrieveResult(self.timeout, pylon.TimeoutHandling_ThrowException)
+        ret = False
+        if self.Status.is_grabbing():
+            #-------------------------------------------------------------
+            if grabResult is None:
+                if self.Status.is_grabbing():
+                    grabResult = self.camera_device.RetrieveResult(self.timeout, pylon.TimeoutHandling_ThrowException)
+                else:
+                    print(ErrorAndWarnings.not_grabbing())
+            #-------------------------------------------------------------
+            if grabResult is not None and grabResult.GrabSucceeded():
+                image = self.converter.Convert(grabResult)
+                res_img = image.Array
+                ret = True
+            elif grabResult is not None:
+                print( ErrorAndWarnings.grab_error(grabResult.ErrorCode, grabResult.ErrorDescription))
             else:
                 print(ErrorAndWarnings.not_grabbing())
-        #-------------------------------------------------------------
-        if grabResult is not None and grabResult.GrabSucceeded():
-            image = self.converter.Convert(grabResult)
-            res_img = image.Array
-        elif grabResult is not None:
-            print( ErrorAndWarnings.grab_error(grabResult.ErrorCode, grabResult.ErrorDescription))
-        else:
-            print(ErrorAndWarnings.not_grabbing())
-        #-------------------------------------------------------------
+            #-------------------------------------------------------------
         if res_img is None:
             if img_when_error == 'zero':
                 res_img = self.build_zero_image()
 
-        return res_img
+        self.image = res_img
+        return ret, res_img
     
 
 class CameraInfo:
@@ -263,10 +277,11 @@ class CameraStatus:
         Returns:
             float: device tempreture
         """
-        if self.camera_object.Infos.is_PRO():
+        if self.camera_object.is_node_available('DeviceTemperature'):
             return self.camera_object.camera_device.DeviceTemperature.GetValue()
-        else:
+        elif self.camera_object.is_node_available('TemperatureAbs'):
             return self.camera_object.camera_device.TemperatureAbs.GetValue()
+        
 
 
 class CameraOperations:
@@ -306,6 +321,8 @@ class CameraParms:
     def __init__(self, camera_object: Camera):
         self.camera_object = camera_object
 
+    
+
     def __set_value__(self, value, parameter):
         if not self.camera_object.Status.is_open():
             self.camera_object.Operations.open()
@@ -332,6 +349,17 @@ class CameraParms:
     
     def __get_available_value__(self, parameter):
         return parameter.Symbolics
+
+    def __get_value_range__(self, parameter):
+        #        print(parameter.Node.Name, )
+        access = parameter.Node.GetAccessMode()
+        if access == 1:
+            if not self.camera_object.Status.is_open():
+                self.camera_object.Operations.open()
+        max_v = parameter.Max
+        min_v = parameter.Min
+        return min_v, max_v
+
     
 
 
@@ -410,35 +438,83 @@ class CameraParms:
         node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
         return self.__get_available_value__(node)
 
+    def get_node_range(self, node_name:str) -> tuple:
+        """returns range of allowable values for specific numberical node by its name
+        Examples: 
+            >>> camera.Parms.allowable('gainRaw')
+            >>> (0, 200)
+
+        Args:
+            node_name (str): node name. you can find it by search in camera nodes using 
+            ```Camera.search_in_nodes ``` method 
+        Returns:
+            tuple: (low, high) range
+        """
+        node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
+        return self.__get_value_range__(node)
+
+
     def set_gain(self, gain: int) -> None:
         """set gain of camera"""
-        if self.camera_object.Infos.is_PRO():
+        if self.camera_object.is_node_available('Gain'):
             self.__set_value__(gain, self.camera_object.camera_device.Gain)
-        else:
+        elif self.camera_object.is_node_available('GainRaw'):
             self.__set_value__(gain, self.camera_object.camera_device.GainRaw)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
     
     def get_gain(self) -> int:
         """get gain of camera"""
-        if self.camera_object.Infos.is_PRO():
+        if self.camera_object.is_node_available('Gain'):
             return self.__get_value__( self.camera_object.camera_device.Gain)
-        else:
+        elif self.camera_object.is_node_available('GainRaw'):
             return self.__get_value__( self.camera_object.camera_device.GainRaw)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
 
+    def get_gain_range(self) -> tuple[int, int]:
+        """get allowable range of gain of camera"""
+        if self.camera_object.is_node_available('Gain'):
+            return self.__get_value_range__( self.camera_object.camera_device.Gain)
+        elif self.camera_object.is_node_available('GainRaw'):
+            return self.__get_value_range__( self.camera_object.camera_device.GainRaw)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
 
 
     def set_exposureTime(self, exposure: int) -> None:
         """set ExposureTime of camera"""
-        if self.camera_object.Infos.is_PRO():
+        if self.camera_object.is_node_available('ExposureTime'):
             self.__set_value__(exposure, self.camera_object.camera_device.ExposureTime)
-        else:
+
+        elif self.camera_object.is_node_available('ExposureTimeAbs'):
             self.__set_value__(exposure, self.camera_object.camera_device.ExposureTimeAbs)
+
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
     
     def get_exposureTime(self) -> int:
         """get ExposureTime of camera"""
-        if self.camera_object.Infos.is_PRO():
+        if self.camera_object.is_node_available('ExposureTime'):
             return self.__get_value__( self.camera_object.camera_device.ExposureTime)
-        else:
+        
+        elif self.camera_object.is_node_available('ExposureTimeAbs'):
             return self.__get_value__(self.camera_object.camera_device.ExposureTimeAbs)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+            
+
+    def get_exposureTime_range(self) -> tuple [int, int]:
+        """get allowable range of ExposureTime of camera"""
+        if self.camera_object.is_node_available('ExposureTime'):
+            return self.__get_value_range__( self.camera_object.camera_device.ExposureTime)
+        
+        elif self.camera_object.is_node_available('ExposureTimeAbs'):
+            return self.__get_value_range__(self.camera_object.camera_device.ExposureTimeAbs)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
 
 
     def set_roi(self, height: int, width: int, offset_x: int, offset_y: int) -> None:
@@ -467,14 +543,26 @@ class CameraParms:
         """return roi parameters of camera
 
         Returns:
-            tuple[ int, int, int, int]: offset_x, offset_y, h, w
+            tuple[ int, int, int, int]: h, w, offset_x, offset_y
         """
         w = self.__get_value__( self.camera_object.camera_device.Width)
         h = self.__get_value__( self.camera_object.camera_device.Height)
         offset_x = self.__get_value__( self.camera_object.camera_device.OffsetX)
         offset_y = self.__get_value__( self.camera_object.camera_device.OffsetY)
-        return offset_x, offset_y, h, w
+        return h, w, offset_x, offset_y
 
+
+    def get_roi_range(self,) -> tuple[ tuple, tuple, tuple, tuple]:
+        """return allowable range of roi parameters of camera
+
+        Returns:
+            tuple[ tuple, tuple, tuple, tuple]: __get_value_range__
+        """
+        w_range = self.__get_value_range__( self.camera_object.camera_device.Width)
+        h_range = self.__get_value_range__( self.camera_object.camera_device.Height)
+        offset_x_range = self.__get_value_range__( self.camera_object.camera_device.OffsetX)
+        offset_y_range = self.__get_value_range__( self.camera_object.camera_device.OffsetY)
+        return h_range, w_range, offset_x_range, offset_y_range 
     
     def set_trigger_option(self, source: str, selector = Trigger.selector.frame_start) -> None:
         """setup trigger option ( trigger source and trigger selector) 
@@ -681,11 +769,11 @@ class Collector:
     
     def get_all_serials(self,) -> list[str]:
         """return list of serialnumber of available cameras"""
-        cameras = self.get_all_cameras()
+        self.devices = self.get_available_devices(None)
         serial_list = []
-        for cam in cameras:
-            device_info = cam.GetDeviceInfo()
-            serial_list.append(device_info.GetSerialNumber())
+        for device in self.devices:
+            sn = device.GetSerialNumber()
+            serial_list.append(sn)
         return serial_list
 
 
@@ -708,56 +796,56 @@ class Collector:
 
 
 
-if __name__ == "__main__":
-    time.sleep(1)
-    collector = Collector()
-    collector.enable_camera_emulation(2)
-    cameras = collector.get_all_cameras(camera_class=CamersClass.emulation)
-    cam1 = cameras[0]
-    #-----------------------------------------------------------------
-    cam1.Parms.set_gain(50000)
-    cam1.Operations.start_grabbing()
-    cam1.search_in_nodes('gain')
-    #cam1.set_image_event(func=test_event)
+# if __name__ == "__main__":
+#     time.sleep(1)
+#     collector = Collector()
+#     collector.enable_camera_emulation(2)
+#     cameras = collector.get_all_cameras(camera_class=CamersClass.emulation)
+#     cam1 = cameras[0]
+#     #-----------------------------------------------------------------
+#     cam1.Parms.set_gain(50000)
+#     cam1.Operations.start_grabbing()
+#     cam1.search_in_nodes('gain')
+#     #cam1.set_image_event(func=test_event)
     
-    #-----------------------------------------------------------------
-    cam1.Parms.set_gain(0)
-    # cam1.set_image_event(test_event)
-    # cam1.Operations.start_grabbing()
-    # cam1.software_trige_exec()
-    # cam1.getPictures()
-    # cam1.camera_device.EventSelector.SetValue('ExposureEnd')
+#     #-----------------------------------------------------------------
+#     cam1.Parms.set_gain(0)
+#     # cam1.set_image_event(test_event)
+#     # cam1.Operations.start_grabbing()
+#     # cam1.software_trige_exec()
+#     # cam1.getPictures()
+#     # cam1.camera_device.EventSelector.SetValue('ExposureEnd')
     
 
-    #-----------------------------------------------------------------------
-    #cam1.Operations.close()
-    # cam1.camera_device.RegisterConfiguration(pylon.SoftwareTriggerConfiguration(), pylon.RegistrationMode_ReplaceAll,
-    #                              pylon.Cleanup_Delete)
+#     #-----------------------------------------------------------------------
+#     #cam1.Operations.close()
+#     # cam1.camera_device.RegisterConfiguration(pylon.SoftwareTriggerConfiguration(), pylon.RegistrationMode_ReplaceAll,
+#     #                              pylon.Cleanup_Delete)
     
-    # cam1.camera_device.GrabCameraEvents.SetValue(True) #enable event handler
-    # cam1.camera_device.RegisterCameraEventHandler(handler1, "ExposureEndEventData", eMyExposureEndEvent, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_None)
+#     # cam1.camera_device.GrabCameraEvents.SetValue(True) #enable event handler
+#     # cam1.camera_device.RegisterCameraEventHandler(handler1, "ExposureEndEventData", eMyExposureEndEvent, pylon.RegistrationMode_ReplaceAll, pylon.Cleanup_None)
 
-    # cam1.Operations.open()
+#     # cam1.Operations.open()
 
-    # cam1.camera_device.EventSelector.SetValue('ExposureEnd')
-    # cam1.camera_device.EventNotification.SetValue('On')
-    #-----------------------------------------------------------------------
+#     # cam1.camera_device.EventSelector.SetValue('ExposureEnd')
+#     # cam1.camera_device.EventNotification.SetValue('On')
+#     #-----------------------------------------------------------------------
 
-    #cam1.Parms.set_trigger_option(Trigger.source.software, Trigger.selector.frame_start)
-    cam1.Operations.start_grabbing()
-    # 
+#     #cam1.Parms.set_trigger_option(Trigger.source.software, Trigger.selector.frame_start)
+#     cam1.Operations.start_grabbing()
+#     # 
 
-    # cam1.Operations.open()
-    # cam1.Operations.start_grabbing()
+#     # cam1.Operations.open()
+#     # cam1.Operations.start_grabbing()
     
     
-    #i  = cam1.getPictures()
-    cam1.software_trige_exec()
-    while True:
+#     #i  = cam1.getPictures()
+#     cam1.software_trige_exec()
+#     while True:
         
-        cam1.software_trige_exec()
-        time.sleep(0.2)
-        cam1.getPictures()
-    pass
-    #a = pylon.InstantCamera()
-    #x = pylon.InstantCamera()
+#         cam1.software_trige_exec()
+#         time.sleep(0.2)
+#         cam1.getPictures()
+#     pass
+#     #a = pylon.InstantCamera()
+#     #x = pylon.InstantCamera()
