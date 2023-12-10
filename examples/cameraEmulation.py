@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.append( os.getcwd())
+
+
 import dorsaPylon
 from dorsaPylon import Collector, Camera
 

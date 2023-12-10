@@ -1,5 +1,11 @@
+import sys
+import os
+sys.path.append( os.getcwd())
+
+
 import dorsaPylon
 from dorsaPylon import Collector, Camera
+import numpy as np
 import cv2
 
 
@@ -11,7 +17,9 @@ camera = collector.get_all_cameras(camera_class=None)[0]
 #-----------------------------------------------------------------
 #define your ideal pixel_type, defualt is BGR8
 camera.build_converter(pixel_type=dorsaPylon.PixelType.GRAY8)
+
+camera.set_error_image(np.zeros((100,100), dtype=np.uint8))
 #-----------------------------------------------------------------
-img = camera.getPictures()
+ret,img = camera.getPictures()
 cv2.imshow('img', img)
 cv2.waitKey(0)

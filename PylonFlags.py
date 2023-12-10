@@ -23,6 +23,7 @@ class PixelType:
     RGB8 = pylon.PixelType_RGB8packed
     BGR8 = pylon.PixelType_BGR8packed
     GRAY8 = pylon.PixelType_Mono8
+    GRAY10 = pylon.PixelType_Mono10
 
 
 class GrabStrategy:

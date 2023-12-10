@@ -115,11 +115,16 @@ class Camera:
         self.nodes_name = self.get_available_nodes()
         self.timeout = 5000
         self.image = None
+        self.error_image = None
 
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
         nodes = nodeMap.GetNodes()
         return list(map(lambda x:x.Node.Name, nodes))
+    
+
+    def set_error_image(self, img:np.ndarray):
+        self.error_image = img
 
 
     def is_node_available(self, node_name):
@@ -180,8 +185,12 @@ class Camera:
     def build_zero_image(self):
         """return a zero image with the dimensions of the camera image"""
         _,_,h,w = self.Parms.get_roi()
-        img = np.zeros((h, w, 3), dtype=np.uint8)
-        return img
+        if self.converter.OutputPixelFormat in [PixelType.GRAY10,
+                                                PixelType.GRAY8]:
+            return np.zeros((h, w), dtype=np.uint8)
+        else:
+            return np.zeros((h, w, 3), dtype=np.uint8)
+        
 
     
 
@@ -215,9 +224,11 @@ class Camera:
                 print(ErrorAndWarnings.not_grabbing())
             #-------------------------------------------------------------
         if res_img is None:
-            if img_when_error == 'zero':
-                res_img = self.build_zero_image()
-
+            if self.error_image is None:
+                if img_when_error == 'zero':
+                    res_img = self.build_zero_image()
+            else:
+                res_img = self.error_image.copy()
         self.image = res_img
         return ret, res_img
     
