@@ -261,6 +261,10 @@ class CameraInfo:
     def is_GigE(self,) -> bool :
          """ return True if camera is GigE class"""
          return self.camera_object.camera_device.IsGigE()
+    
+    def is_Simulation(self,) -> bool :
+         """ return True if camera is GigE class"""
+         return self.get_class() == 'BaslerCamEmu'
 
 
 
