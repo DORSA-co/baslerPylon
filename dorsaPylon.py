@@ -17,27 +17,14 @@ Features:
 ########################################
 """
 from pypylon import pylon
-from PylonFlags import CamersClass, Trigger, PixelType
+from PylonFlags import CamersClass, Trigger, PixelType, GammaMode
 import cv2
 import time
 import numpy as np
 import threading
 import os
 from pypylon import genicam
-'''
-                         !تذکر
-از قرار دادن هرگونه اسد و پرینت اروووررررر جدا خودداری فرمایید
-            حتی شما مدیر پروژه عزیز اکسین
-'''
-# 
 
-
-
-'''
-bandwidth manager
-USB camera
-offset_x , offset_y
-'''
 
 DEBUG = False
 show_eror = False
@@ -75,26 +62,6 @@ class ErrorAndWarnings:
     @staticmethod
     def node_not_avaiable():
         return 'predefine node not available, please set node by its name'
-    
-
-
-
-
-
-
-
-
-
-
-
-# class CameraOption:
-#     def __init__(self, camera_device):
-#         self.camera_device = camera_device
-
-
-
-
-
 
 
 class Camera:
@@ -117,6 +84,7 @@ class Camera:
         self.image = None
         self.error_image = None
 
+
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
         nodes = nodeMap.GetNodes()
@@ -130,6 +98,7 @@ class Camera:
     def is_node_available(self, node_name):
         return node_name in self.nodes_name
     
+
     def reset(self,):
         """Reset all camera settings
         """
@@ -164,9 +133,6 @@ class Camera:
         converter.OutputBitAlignment = pylon.OutputBitAlignment_MsbAligned
         self.converter = converter
         return converter
-
-    
-
 
     def set_image_event(self, func):
         if self.Status.is_open():
@@ -247,7 +213,7 @@ class CameraInfo:
         return self.camera_object.camera_device.DeviceInfo.GetSerialNumber()
     
     def get_class(self) -> str:
-        """return calas of camera in `Str` type like BaslerGigE and BaslerUSB"""
+        """return class of camera as `Str` type like BaslerGigE and BaslerUSB"""
         return self.camera_object.camera_device.DeviceInfo.GetDeviceClass()
 
     def is_PRO(self,) -> bool:
@@ -335,8 +301,7 @@ class CameraOperations:
 class CameraParms:
     def __init__(self, camera_object: Camera):
         self.camera_object = camera_object
-
-    
+   
 
     def __set_value__(self, value, parameter):
         if not self.camera_object.Status.is_open():
@@ -363,6 +328,9 @@ class CameraParms:
         return parameter.Value
     
     def __get_available_value__(self, parameter):
+
+        ######### here is the bug
+        # print(parameter)
         return parameter.Symbolics
 
     def __get_value_range__(self, parameter):
@@ -388,7 +356,10 @@ class CameraParms:
                         offset_y=None,
                         trigger=None,
                         trigge_source=None,
-                        trigge_selector = None
+                        trigge_selector = None,
+                        gamma_enable = None,
+                        gamma_mode = None,
+                        gamma_value = None
                         ):
         """Set commonly used parameters at once
         ** If any parameter is set to `None`, that parameter will not be set on the camera 
@@ -398,18 +369,20 @@ class CameraParms:
         self.set_exposureTime(exposure)
         self.set_trigger_option(trigge_source, trigge_selector)
         self.set_roi(height, width, offset_x, offset_y )
+
         if trigger:
             self.set_trigger_on()
         else:
             self.set_trigger_off()
-        #self.max_buffer = max_buffer
-        #self.cont_eror = 0
-        #self.trigger = trigger
-        #self.dp = delay_packet
-        #self.ps = packet_size
-        #self.ftd = frame_transmission_delay
-        #self.exitCode = 0
-        self.set_node()
+
+        if gamma_enable:
+            self.set_gamma_enable(gamma_enable)
+            self.set_gamma_mode(gamma_mode=gamma_mode, gamma_value=gamma_value)
+        else:
+            self.set_gamma_enable(gamma_enable)
+        # self.set_node()
+
+
     def set_node(self, node_name:str, value ):
         """set value to specefic node by its name
         Examples: 
@@ -423,6 +396,8 @@ class CameraParms:
         node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
         self.__set_value__(value, node)
     
+
+
     def get_node(self, node_name: str ):
         """get value of specefic node by its name
         Examples: 
@@ -438,6 +413,8 @@ class CameraParms:
         node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
         return self.__get_value__(node)
     
+
+
     def availble_node_values(self, node_name:str):
         """returns list of available values for specific node by its name
         Examples: 
@@ -452,6 +429,8 @@ class CameraParms:
         """
         node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
         return self.__get_available_value__(node)
+
+
 
     def get_node_range(self, node_name:str) -> tuple:
         """returns range of allowable values for specific numberical node by its name
@@ -469,6 +448,84 @@ class CameraParms:
         return self.__get_value_range__(node)
 
 
+
+    def set_gamma_enable(self, enable:bool):
+        """enable or disable gamma mode
+
+        Args:
+            enable (bool): enable of gamma mode
+        """
+        if enable: 
+            self.set_node('GammaEnable', True)
+        else:
+            self.set_node('GammaEnable', False)
+
+
+
+
+    def set_gamma_mode(self, gamma_mode : str, gamma_value:float = None):
+        """set gamma mode
+
+        Args:
+            gamma_mode (str): name of mode
+            gamma_value (float): value for user mode
+        """
+        if gamma_mode == GammaMode.user.lower():
+            self.set_node('GammaSelector', GammaMode.user)
+            self.set_gamma_value(gamma_value=gamma_value)
+        elif gamma_mode == GammaMode.srgb.lower():
+            self.set_node('GammaSelector', GammaMode.srgb)
+        else:
+            print('Not in defined modes')
+
+    
+    def set_gamma_value(self, gamma_value: float):
+        """set value for gamma user mode
+
+        Args:
+            gamma_value (float): value for gamma
+        """
+
+        # get available range for node
+        available_range = self.get_node_range('Gamma')
+        
+        # check if values is in specified range
+        if available_range[0] <= gamma_value <= available_range[1]:
+            self.set_node('Gamma', gamma_value)
+        else:
+            print('entered value is not in acceptable range of gamma values')
+            return
+
+
+    def get_gamma_enable_status(self):
+    
+        if self.camera_object.is_node_available('GammaEnable'):
+            return self.get_node('GammaEnable')
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+        return
+    
+    def get_gamma_mode(self):
+        if self.camera_object.is_node_available('GammaSelector'):
+            return self.get_node('GammaSelector')
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+        return
+        
+
+    def get_gamma_value(self):
+
+        if self.camera_object.is_node_available('Gamma'):
+            if self.get_gamma_mode() == GammaMode.user:
+                return self.get_node('Gamma')
+            else:
+                return
+    
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+        return
+
+
     def set_gain(self, gain: int) -> None:
         """set gain of camera"""
         if self.camera_object.is_node_available('Gain'):
@@ -478,6 +535,7 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
     
+
     def get_gain(self) -> int:
         """get gain of camera"""
         if self.camera_object.is_node_available('Gain'):
@@ -487,6 +545,8 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
 
+
+
     def get_gain_range(self) -> tuple[int, int]:
         """get allowable range of gain of camera"""
         if self.camera_object.is_node_available('Gain'):
@@ -495,6 +555,8 @@ class CameraParms:
             return self.__get_value_range__( self.camera_object.camera_device.GainRaw)
         else:
             print(ErrorAndWarnings.node_not_avaiable())
+
+
 
 
     def set_exposureTime(self, exposure: int) -> None:
@@ -508,6 +570,8 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
     
+
+
     def get_exposureTime(self) -> int:
         """get ExposureTime of camera"""
         if self.camera_object.is_node_available('ExposureTime'):
@@ -519,6 +583,8 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
             
+
+
 
     def get_exposureTime_range(self) -> tuple [int, int]:
         """get allowable range of ExposureTime of camera"""
@@ -579,12 +645,11 @@ class CameraParms:
         offset_y_range = self.__get_value_range__( self.camera_object.camera_device.OffsetY)
         return h_range, w_range, offset_x_range, offset_y_range 
     
+
     def set_trigger_option(self, source: str, selector = Trigger.selector.frame_start) -> None:
         """setup trigger option ( trigger source and trigger selector) 
         Examples:
             >>> camera.Parms.set_trigger_option(Trigger.source.software, Trigger.selector.frame_start)
-
-
         Args:
             source (str): source of trigger 
                 Trigger.source.software
@@ -596,6 +661,7 @@ class CameraParms:
         self.__set_value__(source, self.camera_object.camera_device.TriggerSource)
         self.__set_value__(selector, self.camera_object.camera_device.TriggerSelector)
 
+
     def get_trigger_option(self) -> tuple[str, str]:
         """return values of TriggerSource and TriggerSelector
 
@@ -605,7 +671,8 @@ class CameraParms:
         source = self.__get_value__(self.camera_object.camera_device.TriggerSource)
         selector = self.__get_value__(self.camera_object.camera_device.TriggerSelector)
         return source, selector
-    
+
+
     
     def availble_triggersource_values(self) -> tuple[str]:
         """return avaible value for TriggerSource node of camera
@@ -614,7 +681,9 @@ class CameraParms:
             tuple[str]: avaible value for TriggerSource node of camera
         """
         return self.__get_available_value__(self.camera_object.camera_device.TriggerSource)
-    
+
+
+
     def availble_triggerselector_values(self) -> tuple[str]:
         """return avaible value for TriggerSelector node of camera
 
@@ -629,17 +698,21 @@ class CameraParms:
         self.__set_value__('On', self.camera_object.camera_device.TriggerMode)
         
 
+
     def set_trigger_off(self) -> None:
         """trun trigger `Off` """
         self.__set_value__('Off', self.camera_object.camera_device.TriggerMode)
+
 
     def get_trigger_mode(self) -> str:
         """return trigger mode value (`On` or `Off`)"""
         return self.__get_value__(self.camera_object.camera_device.TriggerMode)
 
-    def set_bandwith(self,):
+
+    def set_bandwidth(self,):
         #fps = bandwidth / payload_size
         pass
+
 
     def set_transportlayer(self,packet_delay: int, packet_size = None) -> None:
         """set packet_delay and packet_size of camera
@@ -667,13 +740,6 @@ class CameraImageEventHandler(pylon.ImageEventHandler):
         img = self.camera.getPictures(grabResult)
         if self.event_func is not None:
             self.event_func(img)
-
-
-
-
-
-
-
 
 
 
@@ -812,15 +878,22 @@ class Collector:
 
 
 # if __name__ == "__main__":
-#     time.sleep(1)
+# #     time.sleep(1)
 #     collector = Collector()
-#     collector.enable_camera_emulation(2)
-#     cameras = collector.get_all_cameras(camera_class=CamersClass.emulation)
+# #     collector.enable_camera_emulation(2)
+#     cameras = collector.get_all_cameras(camera_class=CamersClass.gige)
 #     cam1 = cameras[0]
-#     #-----------------------------------------------------------------
-#     cam1.Parms.set_gain(50000)
+# #     #-----------------------------------------------------------------
+# #     cam1.Parms.set_gain(50000)
 #     cam1.Operations.start_grabbing()
-#     cam1.search_in_nodes('gain')
+#     while True:
+#         try:
+#             res, img3 = cam1.getPictures()
+
+#             cv2.imshow('gamma dis', img3)
+#         except:
+#             pass
+    
 #     #cam1.set_image_event(func=test_event)
     
 #     #-----------------------------------------------------------------
@@ -864,3 +937,59 @@ class Collector:
 #     pass
 #     #a = pylon.InstantCamera()
 #     #x = pylon.InstantCamera()
+    
+
+    # -------------------------------------------
+    # testing Gamma enable and disable
+    # cam1.search_in_nodes('gamma')
+    # # print(cam1.Parms.availble_node_values('Gamma'))
+    
+    # cam1.Operations.start_grabbing()
+    # res, img = cam1.getPictures()
+    # cv2.imshow('img', img)
+    # cv2.waitKey(0)
+
+    # cam1.Parms.set_all_parms(gamma_enable=True, gamma_mode='user', gamma_value=0.4)
+
+    # cam1.Parms.set_node('GammaEnable', True)
+    # cam1.Parms.set_node('GammaSelector', GammaMode.user)
+    # cam1.Parms.set_node('Gamma', 0.4)
+    # cv2.waitKey(500)
+    # res, img2 = cam1.getPictures()
+    # cv2.imshow('gamma enable', img2)
+    # cv2.waitKey(0)
+
+
+    # cam1.Parms.set_all_parms(gamma_enable=False)
+    # cv2.waitKey(500)
+    # res, img2 = cam1.getPictures()
+    # cv2.imshow('gamma enable', img2)
+    # cv2.waitKey(0)
+
+    # cam1.Parms.set_node('GammaEnable', False)
+    
+    #     cv2.waitKey(100)
+    # cam1.Operations.start_grabbing()
+    # cam1.Parms.set_gamma_enable(True)
+    # cam1.Parms.set_gamma_mode('srgb')
+    # print('Mode: ', cam1.Parms.get_gamma_mode())
+    # print('Value: ', cam1.Parms.get_gamma_value())
+    # print('Status: ', cam1.Parms.get_gamma_enable_status())
+    # # res, img2 = cam1.getPictures()
+    # # cv2.imshow('gamma enable', img2)
+    # # cv2.waitKey(5000)
+    # cam1.Parms.set_gamma_enable(False)
+    # print('Mode: ', cam1.Parms.get_gamma_mode())
+    # print('Value: ', cam1.Parms.get_gamma_value())
+    # print('Status: ', cam1.Parms.get_gamma_enable_status())
+    # # res, img2 = cam1.getPictures()
+    # # cv2.imshow('gamma enable', img2)
+    # # cv2.waitKey(5000)
+    # cam1.Parms.set_gamma_enable(True)
+    # cam1.Parms.set_gamma_mode('user', 0.2)
+    # print('Mode: ', cam1.Parms.get_gamma_mode())
+    # print('Value: ', cam1.Parms.get_gamma_value())
+    # print('Status: ', cam1.Parms.get_gamma_enable_status())
+    # res, img2 = cam1.getPictures()
+    # cv2.imshow('gamma enable', img2)
+    # cv2.waitKey(5000)
