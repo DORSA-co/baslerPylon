@@ -359,7 +359,8 @@ class CameraParms:
                         trigge_selector = None,
                         gamma_enable = None,
                         gamma_mode = None,
-                        gamma_value = None
+                        gamma_value = None, 
+                        black_level_raw = None
                         ):
         """Set commonly used parameters at once
         ** If any parameter is set to `None`, that parameter will not be set on the camera 
@@ -380,7 +381,8 @@ class CameraParms:
             self.set_gamma_mode(gamma_mode=gamma_mode, gamma_value=gamma_value)
         else:
             self.set_gamma_enable(gamma_enable)
-        # self.set_node()
+        
+        self.set_blacklevelraw(black_level_raw)
 
 
     def set_node(self, node_name:str, value ):
@@ -524,6 +526,41 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
         return
+
+    def set_blacklevelraw(self, value:int):
+        """set black level raw on camera
+
+        Args:
+            value (int): value of black level
+        """
+        if self.camera_object.is_node_available('BlackLevelRaw'):
+            available_range = self.get_node_range('BlackLevelRaw')
+            if available_range[0] <= value and value <= available_range[1]:
+                self.set_node('BlackLevelRaw', value=value)
+            
+            else:
+                print(ErrorAndWarnings.not_in_range('BlackLevelRaw', available_range[0], available_range[1]))
+                # if smaller then lower, set lower and if higher that max, set max
+                if available_range[0] > value:
+                    self.set_node('BlackLevelRaw', value=available_range[0])
+                else:
+                    self.set_node('BlackLevelRaw', value=available_range[1])
+
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+
+
+    def get_blacklevelraw(self) -> int:
+        """get black level raw
+
+        Returns:
+            int: value of black level
+        """
+        if self.camera_object.is_node_available('BlackLevelRaw'):
+            return self.get_node('BlackLevelRaw')
+        else:
+            print(ErrorAndWarnings.node_not_avaiable())
+
 
 
     def set_gain(self, gain: int) -> None:
@@ -878,11 +915,52 @@ class Collector:
 
 
 # if __name__ == "__main__":
-# #     time.sleep(1)
+#     time.sleep(1)
 #     collector = Collector()
-# #     collector.enable_camera_emulation(2)
 #     cameras = collector.get_all_cameras(camera_class=CamersClass.gige)
 #     cam1 = cameras[0]
+
+#     #-----------------------------------------------------
+#     # Black level
+#     # cam1.search_in_nodes('black')
+
+#     cam1.Operations.start_grabbing()
+
+#     cam1.Parms.set_all_parms(black_level_raw=500)
+
+#     # cam1.Parms.set_blacklevelraw(0)
+#     cv2.waitKey(100)
+#     res, img = cam1.getPictures()
+#     print(cam1.Parms.get_blacklevelraw())
+#     cv2.imshow('img', img)
+
+#     cv2.waitKey(0)
+
+    # cam1.Parms.set_blacklevelraw(100)
+    # cv2.waitKey(100)
+    # res, img = cam1.getPictures()
+    # print(cam1.Parms.get_blacklevelraw())
+    # cv2.imshow('img', img)
+
+    # cv2.waitKey(0)
+
+    # cam1.Parms.set_blacklevelraw(500)
+    # cv2.waitKey(100)
+    # res, img = cam1.getPictures()
+    # print(cam1.Parms.get_blacklevelraw())
+    # cv2.imshow('img', img)
+
+    # cv2.waitKey(0)
+
+    # cam1.Parms.set_blacklevelraw(600)
+    # cv2.waitKey(100)
+    # res, img = cam1.getPictures()
+    # print(cam1.Parms.get_blacklevelraw())
+    # cv2.imshow('img', img)
+
+    # cv2.waitKey(0)
+
+
 # #     #-----------------------------------------------------------------
 # #     cam1.Parms.set_gain(50000)
 #     cam1.Operations.start_grabbing()
