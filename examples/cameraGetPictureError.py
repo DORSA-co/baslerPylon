@@ -22,6 +22,8 @@ camera.build_converter(pixel_type=dorsaPylon.PixelType.GRAY8)
 #camera.set_error_image(np.zeros((100,100), dtype=np.uint8))
 #-----------------------------------------------------------------
 camera.Operations.start_grabbing()
+camera.Operations.stop_grabbing()
+
 ret,img = camera.getPictures()
 cv2.imshow('img', img)
 cv2.waitKey(0)

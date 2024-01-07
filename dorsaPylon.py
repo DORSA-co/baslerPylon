@@ -115,7 +115,7 @@ class Camera:
         self.nodes_name = self.get_available_nodes()
         self.timeout = 5000
         self.image = None
-        self.error_image = None
+        self.error_image = self.build_zero_image(480,640)
 
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
@@ -182,9 +182,8 @@ class Camera:
         self.camera_device.TriggerSoftware()
     
 
-    def build_zero_image(self):
+    def build_zero_image(self, h,w):
         """return a zero image with the dimensions of the camera image"""
-        _,_,h,w = self.Parms.get_roi()
         if self.converter.OutputPixelFormat in [PixelType.GRAY10,
                                                 PixelType.GRAY8]:
             return np.zeros((h, w), dtype=np.uint8)
@@ -194,7 +193,7 @@ class Camera:
 
     
 
-    def getPictures(self, grabResult = None, img_when_error='zero') -> np.ndarray:
+    def getPictures(self, grabResult = None) -> np.ndarray:
         """return an image if camera caReturns an image if the camera has captured an image
 
         Args:
@@ -224,11 +223,11 @@ class Camera:
                 print(ErrorAndWarnings.not_grabbing())
             #-------------------------------------------------------------
         if res_img is None:
-            if self.error_image is None:
-                if img_when_error == 'zero':
-                    res_img = self.build_zero_image()
-            else:
-                res_img = self.error_image.copy()
+            # if self.error_image is None:
+            #     if img_when_error == 'zero':
+            #         res_img = self.build_zero_image()
+            # else:
+            res_img = self.error_image.copy()
         self.image = res_img
         return ret, res_img
     
@@ -324,6 +323,9 @@ class CameraOperations:
         self.open()
         if not self.camera_object.Status.is_grabbing():
             self.camera_object.camera_device.StartGrabbing(strategy)
+        
+        h,w,_,_ = self.camera_object.Parms.get_roi()
+        self.camera_object.error_image = self.camera_object.build_zero_image(h,w)
     
     def stop_grabbing(self):
         """stop grabbing"""
