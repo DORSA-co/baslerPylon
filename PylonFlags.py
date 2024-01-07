@@ -29,3 +29,7 @@ class PixelType:
 class GrabStrategy:
     last_image = pylon.GrabStrategy_LatestImageOnly
     onebyone = pylon.GrabStrategy_OneByOne
+
+class GammaMode:
+    user = 'User'
+    srgb = 'sRGB'
