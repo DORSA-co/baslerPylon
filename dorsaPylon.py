@@ -17,7 +17,7 @@ Features:
 ########################################
 """
 from pypylon import pylon
-from PylonFlags import CamersClass, Trigger, PixelType, GammaMode
+from PylonFlags import CamersClass, Trigger, PixelType, GammaMode, GetPictureErrors
 import cv2
 import time
 import numpy as np
@@ -58,6 +58,20 @@ class ErrorAndWarnings:
     @staticmethod
     def not_grabbing():
         return "ERROR: camera isn't grabbing. Start Grabbing First!"
+    
+    @staticmethod
+    def not_open():
+        return "ERROR: camera isn't open. Open First!"
+    
+    @staticmethod
+    def physically_removed():
+        return "ERROR: camera physically removed"
+
+
+    
+    @staticmethod
+    def empty_buffer():
+        return "ERROR: camera buffer is empty"
 
     @staticmethod
     def node_not_avaiable():
@@ -159,43 +173,88 @@ class Camera:
 
     
 
-    def getPictures(self, grabResult = None) -> np.ndarray:
+    def getPictures(self, grabResult = None) -> tuple[bool, np.ndarray, int]:
         """return an image if camera caReturns an image if the camera has captured an image
 
         Args:
             grabResult (_type_, optional): grabResult of camera. generally used for event. Defaults to None.
             img_when_error (str, optional): determine what returns when the captured image got an error. Defaults to 'zero'.
+.
 
         Returns:
-            np.ndarray: captured image
+            tuple[bool, np.ndarray, int]: ret_flag, res_img, status
+            ret_flag: if be False the image was not captured correctly
+            res_img:  captured image
+            status: returns the error code,
+                if be 0 no error happend,
+                if be 1 the camera is not grabbing
+
         """
         res_img = None
         ret = False
-        if self.Status.is_grabbing():
-            #-------------------------------------------------------------
-            if grabResult is None:
-                if self.Status.is_grabbing():
-                    grabResult = self.camera_device.RetrieveResult(self.timeout, pylon.TimeoutHandling_ThrowException)
-                else:
-                    print(ErrorAndWarnings.not_grabbing())
-            #-------------------------------------------------------------
-            if grabResult is not None and grabResult.GrabSucceeded():
-                image = self.converter.Convert(grabResult)
-                res_img = image.Array
-                ret = True
-            elif grabResult is not None:
-                print( ErrorAndWarnings.grab_error(grabResult.ErrorCode, grabResult.ErrorDescription))
+        status = 0
+
+        res_img = self.error_image.copy()
+
+        if self.Status.is_removed_physically():
+            print(ErrorAndWarnings.physically_removed)
+            status = GetPictureErrors.phisically_remove
+            return False, res_img, status
+        
+        if not self.Status.is_open():
+            print(ErrorAndWarnings.not_open())
+            status = GetPictureErrors.is_not_open
+            return False, res_img, status
+        
+        if not self.Status.is_grabbing():
+            print(ErrorAndWarnings.not_grabbing())
+            status = GetPictureErrors.is_not_grabbing
+            print(ErrorAndWarnings.not_open())
+            return False, res_img, status
+        
+        if self.Status.get_images_count_in_buffer() == 0:
+            print(ErrorAndWarnings.empty_buffer())
+            status = GetPictureErrors.buffer_empty
+            return False, res_img, status
+            
+
+
+        #-------------------------------------------------------------
+        if grabResult is None:
+            if self.Status.is_grabbing():
+                grabResult = self.camera_device.RetrieveResult(self.timeout, pylon.TimeoutHandling_ThrowException)
             else:
                 print(ErrorAndWarnings.not_grabbing())
-            #-------------------------------------------------------------
+                status = GetPictureErrors.is_not_grabbing
+        #-------------------------------------------------------------
+        if grabResult is not None and grabResult.GrabSucceeded():
+            image = self.converter.Convert(grabResult)
+            res_img = image.Array
+            ret = True
+            status = GetPictureErrors.no_error
+
+        elif grabResult is not None:
+            print( ErrorAndWarnings.grab_error(grabResult.ErrorCode, grabResult.ErrorDescription))
+            status = GetPictureErrors.grabresult_error
+            return False, res_img, status
+
+        else:
+            print( ErrorAndWarnings.grab_error(grabResult.ErrorCode, grabResult.ErrorDescription))
+            status = GetPictureErrors.grabresult_error
+            return False, res_img, status
+
+        #-------------------------------------------------------------
+
         if res_img is None:
             # if self.error_image is None:
             #     if img_when_error == 'zero':
             #         res_img = self.build_zero_image()
             # else:
             res_img = self.error_image.copy()
+            
+
         self.image = res_img
-        return ret, res_img
+        return ret, res_img, status
     
 
 class CameraInfo:
@@ -251,6 +310,12 @@ class CameraStatus:
         """ return True if trigger be On"""
         return self.camera_object.Parms.__get_value__(self.camera_object.camera_device.TriggerMode).lower() == 'on'
     
+    def is_connect_physically(self,) -> bool:
+        return not(self.camera_object.camera_device.IsCameraDeviceRemoved())
+    
+    def is_removed_physically(self,):
+        return self.camera_object.camera_device.IsCameraDeviceRemoved()
+    
     def get_tempreture(self) -> float:
         """return device tempreture
 
@@ -261,6 +326,15 @@ class CameraStatus:
             return self.camera_object.camera_device.DeviceTemperature.GetValue()
         elif self.camera_object.is_node_available('TemperatureAbs'):
             return self.camera_object.camera_device.TemperatureAbs.GetValue()
+        
+    def get_images_count_in_buffer(self,) -> int:
+        """returns ready images count in buffer
+
+        Returns:
+            int: 
+        """
+        return self.camera_object.camera_device.NumReadyBuffers.GetValue()
+    
         
 
 
@@ -306,8 +380,8 @@ class CameraParms:
    
 
     def __set_value__(self, value, parameter):
-        if not self.camera_object.Status.is_open():
-            self.camera_object.Operations.open()
+        # if not self.camera_object.Status.is_open():
+        #     self.camera_object.Operations.open()
         
         if value is not None:
             if type(value) == int or type(value) == float:
@@ -325,8 +399,8 @@ class CameraParms:
 
     
     def __get_value__(self, parameter):
-        if not self.camera_object.Status.is_open():
-            self.camera_object.Operations.open()
+        # if not self.camera_object.Status.is_open():
+        #     self.camera_object.Operations.open()
         return parameter.Value
     
     def __get_available_value__(self, parameter):
@@ -338,9 +412,9 @@ class CameraParms:
     def __get_value_range__(self, parameter):
         #        print(parameter.Node.Name, )
         access = parameter.Node.GetAccessMode()
-        if access == 1:
-            if not self.camera_object.Status.is_open():
-                self.camera_object.Operations.open()
+        # if access == 1:
+        #     if not self.camera_object.Status.is_open():
+        #         self.camera_object.Operations.open()
         max_v = parameter.Max
         min_v = parameter.Min
         return min_v, max_v
