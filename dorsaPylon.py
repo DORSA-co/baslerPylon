@@ -186,8 +186,13 @@ class Camera:
             ret_flag: if be False the image was not captured correctly
             res_img:  captured image
             status: returns the error code,
-                if be 0 no error happend,
-                if be 1 the camera is not grabbing
+                no_error = 0
+                is_not_open = 1
+                is_not_grabbing = 2
+                phisically_remove = 3
+                buffer_empty = 4
+                grabresult_error = 5
+
 
         """
         res_img = None
