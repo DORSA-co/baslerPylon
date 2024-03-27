@@ -173,7 +173,7 @@ class Camera:
 
     
 
-    def getPictures(self, grabResult = None) -> tuple[bool, np.ndarray, int]:
+    def getPictures(self, grabResult = None, check_buffer=False) -> tuple[bool, np.ndarray, int]:
         """return an image if camera caReturns an image if the camera has captured an image
 
         Args:
@@ -217,7 +217,7 @@ class Camera:
             print(ErrorAndWarnings.not_open())
             return False, res_img, status
         
-        if self.Status.get_images_count_in_buffer() == 0:
+        if check_buffer and self.Status.get_images_count_in_buffer() == 0:
             print(ErrorAndWarnings.empty_buffer())
             status = GetPictureErrors.buffer_empty
             return False, res_img, status
