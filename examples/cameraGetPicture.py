@@ -24,5 +24,10 @@ camera.build_converter(pixel_type=dorsaPylon.PixelType.GRAY8)
 camera.Operations.start_grabbing()
 for i in range(100):
     ret,img,status = camera.getPictures()
+    print('success fps:', camera.Status.get_success_fps())
+    print('running fps:', camera.Status.get_running_fps())
+    print('camera fps:', camera.Status.get_camera_fps())
+    print('-----------------------------------------')
     cv2.imshow('img', img)
-    cv2.waitKey(50)
+    cv2.waitKey(100)
+    

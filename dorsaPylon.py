@@ -98,6 +98,21 @@ class Camera:
         self.image = None
         self.error_image = self.build_zero_image(480,640)
 
+        
+        self.fps={
+            'success_grab':{'fps':0, 'prev_update':0, 'moving_avg':5},
+            'running'     :{'fps':0, 'prev_update':0, 'moving_avg':5},
+        }
+        
+
+    def __update_fps(self, name:str):
+        current_fps = 1 / ( time.time() - self.fps[name]['prev_update'])
+
+        self.fps[name]['fps'] = ( 1 / self.fps[name]['moving_avg'] * current_fps 
+                                + (self.fps[name]['moving_avg'] - 1)/self.fps[name]['moving_avg'] * self.fps[name]['fps']
+                                )
+        self.fps[name]['prev_update'] = time.time()
+
 
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
@@ -195,6 +210,8 @@ class Camera:
 
 
         """
+        self.__update_fps('running')
+
         res_img = None
         ret = False
         status = 0
@@ -202,7 +219,7 @@ class Camera:
         res_img = self.error_image.copy()
 
         if self.Status.is_removed_physically():
-            print(ErrorAndWarnings.physically_removed)
+            print(ErrorAndWarnings.physically_removed())
             status = GetPictureErrors.phisically_remove
             return False, res_img, status
         
@@ -256,7 +273,9 @@ class Camera:
             #         res_img = self.build_zero_image()
             # else:
             res_img = self.error_image.copy()
-            
+        
+        if ret:
+            self.__update_fps('success_grab')
 
         self.image = res_img
         return ret, res_img, status
@@ -340,7 +359,34 @@ class CameraStatus:
         """
         return self.camera_object.camera_device.NumReadyBuffers.GetValue()
     
-        
+
+    def get_camera_fps(self,) -> float:
+        """returns fps of camera. it shows number of image that
+           camera grab in one seconds. but it may be diffrent from
+           fps of getting image from camera in a application
+
+        Returns:
+            float: fps
+        """
+        self.camera_object.Parms.get_node('ResultingFrameRateAbs')
+
+    def get_success_fps(self,) ->float:
+        """returns fps of successed grabbed image. this parameters
+        shows real performance of an application and netword
+
+        Returns:
+            float: fps
+        """
+        return round(self.camera_object.fps['success_grab']['fps'],1)
+
+    def get_running_fps(self,) ->float:
+        """
+        shows how many time getPicture time call in one second.
+        Regardless of whether the capture is successful or not
+        Returns:
+            float: fps
+        """
+        return round(self.camera_object.fps['running']['fps'],1)
 
 
 class CameraOperations:
@@ -827,20 +873,97 @@ class CameraParms:
         return self.__get_value__(self.camera_object.camera_device.TriggerMode)
 
 
-    def set_bandwidth(self,):
-        #fps = bandwidth / payload_size
-        pass
 
 
-    def set_transportlayer(self,packet_delay: int, packet_size = None) -> None:
+    def set_inter_packet_delay(self, pd:int):
+        """set inter delay packet
+
+        Args:
+            pd (int): time of packet delay in us
+        """
+        self.__set_value__(pd, self.camera_object.camera_device.GevSCPD)
+    
+    def get_inter_packet_delay(self,) -> int:
+        return self.__get_value__(self.camera_object.camera_device.GevSCPD)
+
+    def get_inter_delay_packet_range(self,) -> tuple[int, int]:
+        return self.__get_value_range__(self.camera_object.camera_device.GevSCPD)
+
+    def set_packet_size(self, ps:int):
+        """set packet size. ps is bytes"""
+        self.__set_value__(ps, self.camera_object.camera_device.GevSCPSPacketSize)
+    
+    def get_packet_size(self,) -> int:
+        """return packet size in bytes"""
+        return self.__get_value__(self.camera_object.camera_device.GevSCPSPacketSize)
+
+    def get_packet_size_range(self,) -> tuple[int, int]:
+        """returns packet size range in bytes"""
+        return self.__get_value_range__(self.camera_object.camera_device.GevSCPSPacketSize)
+
+    def set_bandwidth_reserve(self, br:int):
+        """set band width reseve. it is percent between 0,100"""
+        self.__set_value__(br, self.camera_object.camera_device.GevSCBWR)
+    
+    def get_bandwidth_reserve(self,) -> int:
+        """returns bandwidth reseve. it is percent"""
+        return self.__get_value__(self.camera_object.camera_device.GevSCBWR)
+
+    def get_bandwidth_reserve_range(self,) -> tuple[int, int]:
+        """returns availavbe bandwidth reseve percent range"""
+        return self.__get_value_range__(self.camera_object.camera_device.GevSCBWR)
+    
+    def set_bandwidth_reserve_accumulation(self, br:int):
+        """set band width reseve accumulation"""
+        self.__set_value__(br, self.camera_object.camera_device.GevSCBWRA)
+    
+    def get_bandwidth_reserve_accumulation(self,) -> int:
+        """returns bandwidth reseve accumulation."""
+        return self.__get_value__(self.camera_object.camera_device.GevSCBWRA)
+
+    def get_bandwidth_reserve_accumulation_range(self,) -> tuple[int, int]:
+        """returns availavbe bandwidth reseve accumulation"""
+        return self.__get_value_range__(self.camera_object.camera_device.GevSCBWRA)
+
+    def set_transportlayer(self,
+                           inter_packet_delay: int, 
+                           packet_size: int,
+                           bandwidth_reserve:int,
+                           bandwidth_reserve_accumulation:int) -> None:
         """set packet_delay and packet_size of camera
 
         Args:
             packet_delay (int):
             packet_size (int, optional): Defaults to None.
         """
-        self.__set_value__(packet_size, self.camera_object.camera_device.GevSCPSPacketSize)
-        self.__set_value__(packet_delay, self.camera_object.camera_device.GevSCPD)
+        if bandwidth_reserve_accumulation is not None:
+            self.set_bandwidth_reserve_accumulation(bandwidth_reserve_accumulation)
+            
+        if bandwidth_reserve is not None:
+            self.set_bandwidth_reserve(bandwidth_reserve)
+
+        if packet_size is not None:
+            self.set_packet_size(packet_size)
+
+        if inter_packet_delay is not None:
+            self.set_inter_packet_delay(inter_packet_delay)
+
+    
+
+    def get_transportlayer(self,)-> tuple[int]:
+        """returns transportlayer configs
+
+        Returns:
+            tuple[int]: packet_size, inter_packet_delay, bandwidth_reserve, bandwidth_reserve_accum
+        """
+        ps  = self.get_packet_size()
+        pd  = self.get_inter_packet_delay()
+        br  = self.get_bandwidth_reserve()
+        bra = self.get_bandwidth_reserve_accumulation()
+
+        return ps, pd, br, bra
+        
+        
 
 
 
@@ -853,7 +976,7 @@ class CameraImageEventHandler(pylon.ImageEventHandler):
     def set_func(self, func):
         self.event_func = func
 
-    def OnImageGrabbed(self, camera, grabResult):
+    def OnImageGrabbed(self, grabResult):
         print("CameraImageEventHandler.OnImageGrabbed called.")
         img = self.camera.getPictures(grabResult)
         if self.event_func is not None:
