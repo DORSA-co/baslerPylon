@@ -38,7 +38,7 @@ class PixelType:
 
 
 class GrabStrategy:
-    last_image = pylon.GrabStrategy_LatestImageOnly
+    latest_image = pylon.GrabStrategy_LatestImageOnly
     #last_image_only = pylon.GrabStrategy_LatestImages
     onebyone = pylon.GrabStrategy_OneByOne
     upcoming_image = pylon.GrabStrategy_UpcomingImage

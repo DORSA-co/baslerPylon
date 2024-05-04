@@ -17,7 +17,7 @@ Features:
 ########################################
 """
 from pypylon import pylon
-from PylonFlags import CamersClass, Trigger, PixelType, GammaMode, GetPictureErrors
+from PylonFlags import CamersClass, Trigger, PixelType, GammaMode, GetPictureErrors, GrabStrategy
 import cv2
 import time
 import numpy as np
@@ -97,7 +97,9 @@ class Camera:
         
         self.converter = self.build_converter(PixelType.BGR8)
         self.nodes_name = self.get_available_nodes()
+        
         self.timeout = 5000
+        self.grab_strategy = GrabStrategy.latest_image_only
         self.image = None
         self.error_image = self.build_zero_image(480,640)
 
@@ -116,11 +118,20 @@ class Camera:
                                 )
         self.fps[name]['prev_update'] = time.time()
 
+
     def set_grab_timeout(self, timeout:int):
         self.timeout = timeout
 
     def get_grab_timeout(self, ) -> int:
         return self.timeout
+    
+    def set_grab_strategy(self, strategy:str):
+        """set grab strategy
+
+        Args:
+            strategy (str): use pylonFlags.GrabStrategy
+        """
+        self.grab_strategy = strategy
     
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
@@ -412,7 +423,7 @@ class CameraOperations:
         if self.camera_object.Status.is_open():
             self.camera_object.camera_device.Close()
 
-    def start_grabbing(self, strategy = pylon.GrabStrategy_LatestImageOnly ):
+    def start_grabbing(self,):
         """start grabbing. it is necessary for capture image.
         - If the camera is not open, this function will do it automatically
 
@@ -421,7 +432,7 @@ class CameraOperations:
         """
         self.open()
         if not self.camera_object.Status.is_grabbing():
-            self.camera_object.camera_device.StartGrabbing(strategy)
+            self.camera_object.camera_device.StartGrabbing(self.camera_object.grab_strategy)
         
         h,w,_,_ = self.camera_object.Parms.get_roi()
         self.camera_object.error_image = self.camera_object.build_zero_image(h,w)
