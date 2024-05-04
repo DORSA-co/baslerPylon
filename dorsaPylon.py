@@ -772,8 +772,8 @@ class CameraParms:
 
 
 
-    def set_width(self, h:int):
-        self.__set_value__(h, self.camera_object.camera_device.Width)
+    def set_width(self, w:int):
+        self.__set_value__(w, self.camera_object.camera_device.Width)
     
     def get_width(self,) -> int:
         return self.__get_value__( self.camera_object.camera_device.Width)
@@ -782,8 +782,8 @@ class CameraParms:
         return self.__get_value_range__(self.camera_object.camera_device.Width)
     
 
-    def set_offset_x(self, h:int):
-        self.__set_value__(h, self.camera_object.camera_device.OffsetX)
+    def set_offset_x(self, x:int):
+        self.__set_value__(x, self.camera_object.camera_device.OffsetX)
     
     def get_offset_x(self,) -> int:
         return self.__get_value__( self.camera_object.camera_device.OffsetX)
@@ -792,8 +792,8 @@ class CameraParms:
         return self.__get_value_range__(self.camera_object.camera_device.OffsetX)
     
 
-    def set_offset_y(self, h:int):
-        self.__set_value__(h, self.camera_object.camera_device.OffsetY)
+    def set_offset_y(self, y:int):
+        self.__set_value__(y, self.camera_object.camera_device.OffsetY)
     
     def get_offset_y(self,) -> int:
         return self.__get_value__( self.camera_object.camera_device.OffsetY)
