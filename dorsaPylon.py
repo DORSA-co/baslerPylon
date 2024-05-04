@@ -116,7 +116,12 @@ class Camera:
                                 )
         self.fps[name]['prev_update'] = time.time()
 
+    def set_grab_timeout(self, timeout:int):
+        self.timeout = timeout
 
+    def get_grab_timeout(self, ) -> int:
+        return self.timeout
+    
     def get_available_nodes(self,):
         nodeMap = self.camera_device.GetNodeMap()
         nodes = nodeMap.GetNodes()
@@ -636,7 +641,6 @@ class CameraParms:
         """
         node = self.camera_object.camera_device.NodeMap.GetNode(node_name)
         return self.__get_value_range__(node)
-
 
 
     def set_gamma_enable(self, enable:bool):
