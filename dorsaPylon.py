@@ -1094,6 +1094,11 @@ class CameraParms:
     #------------------------------------------------------------------------------
 
     def set_light_source_selector(self, value:str):
+        """set light source 
+
+        Args:
+            value (str): use pylonFlags.LightSource
+        """
         if self.camera_object.is_node_available('LightSourceSelector'):
             self.__set_value__(value, self.camera_object.camera_device.LightSourceSelector)
         
@@ -1101,6 +1106,7 @@ class CameraParms:
             print(ErrorAndWarnings.node_not_avaiable('LightSourceSelector'))
 
     def get_light_source_selector(self,) -> str:
+        """returns selected light source"""
         if self.camera_object.is_node_available('LightSourceSelector'):
             return self.__get_value__(self.camera_object.camera_device.LightSourceSelector)
         
@@ -1109,6 +1115,7 @@ class CameraParms:
 
 
     def available_light_source_selector(self,) -> str:
+        """returns avalaible light sources"""
         if self.camera_object.is_node_available('LightSourceSelector'):
             return self.__get_available_value__(self.camera_object.camera_device.LightSourceSelector)
         
