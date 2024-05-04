@@ -90,6 +90,9 @@ class Camera:
         self.Status = CameraStatus(self)
         self.Operations = CameraOperations(self)
         self.image_event_handler = CameraImageEventHandler(self)
+        
+        #if self.Infos.is_GigE():
+        self.StreamGrabber = CameraStreamGrabber(self)
 
         
         self.converter = self.build_converter(PixelType.BGR8)
@@ -423,6 +426,62 @@ class CameraOperations:
         if self.camera_object.Status.is_grabbing():
             self.camera_object.camera_device.StopGrabbing()
 
+
+
+
+
+
+class CameraStreamGrabber:
+
+    def __init__(self, camera_object:Camera) -> None:
+        self.camera_object = camera_object
+    
+    def __get_node(self, node_name:str):
+        return self.camera_object.camera_device.GetStreamGrabberNodeMap().GetNode(node_name)
+
+
+    
+
+    def set_node_value(self, node_name:str, value):
+        node = self.__get_node(node_name=node_name)
+        self.camera_object.Parms.__set_value__(value, node)
+    
+    def get_node_value(self, node_name:str):
+        node = self.__get_node(node_name=node_name)
+        return self.camera_object.Parms.__get_value__(node)
+    
+    def get_node_range(self, node_name:str):
+        node = self.__get_node(node_name=node_name)
+        return self.camera_object.Parms.__get_value_range__(node)
+    #---------------------------------------------
+
+    def set_frame_retention(self, frame_retention):
+        self.set_node_value('FrameRetention', frame_retention)
+    
+    def get_frame_retention(self,)-> int:
+        return self.get_node_value('FrameRetention')
+    
+    def get_frame_retention_range(self,) -> tuple[int]:
+        return self.get_node_range('FrameRetention')
+    #---------------------------------------------
+    def set_packet_timout(self, timout:int):
+        self.set_node_value('PacketTimeout', timout)
+    
+    def get_packet_timout(self,) -> int:
+        return self.get_node_value('PacketTimeout')
+    
+    def get_packet_timout_range(self,) -> tuple[int]:
+        return self.get_node_range('PacketTimeout')
+    #---------------------------------------------
+    def set_max_num_buffer(self, n:int): 
+        self.set_node_value('MaxNumBuffer', n)
+
+    def get_max_num_buffer(self,): 
+        return self.get_node_value('MaxNumBuffer')
+    
+    def get_max_num_buffer_range(self,) -> tuple[int]:
+        return self.get_node_range('MaxNumBuffer')
+    #---------------------------------------------       
 
 
 class CameraParms:
