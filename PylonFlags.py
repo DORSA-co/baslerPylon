@@ -47,3 +47,12 @@ class GrabStrategy:
 class GammaMode:
     user = 'User'
     srgb = 'sRGB'
+
+
+class Color:
+    red = 'Red'
+    green = 'Green'
+    blue = 'Blue'
+
+class LightSource:
+    Daylight6500K = 'Daylight6500K'

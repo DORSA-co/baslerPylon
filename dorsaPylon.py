@@ -1090,10 +1090,102 @@ class CameraParms:
         bra = self.get_bandwidth_reserve_accumulation()
 
         return ps, pd, br, bra
+    
+    #------------------------------------------------------------------------------
+
+    def set_light_source_selector(self, value:str):
+        if self.camera_object.is_node_available('LightSourceSelector'):
+            self.__set_value__(value, self.camera_object.camera_device.LightSourceSelector)
         
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('LightSourceSelector'))
+
+    def get_light_source_selector(self,) -> str:
+        if self.camera_object.is_node_available('LightSourceSelector'):
+            return self.__get_value__(self.camera_object.camera_device.LightSourceSelector)
         
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('LightSourceSelector'))
 
 
+    def available_light_source_selector(self,) -> str:
+        if self.camera_object.is_node_available('LightSourceSelector'):
+            return self.__get_available_value__(self.camera_object.camera_device.LightSourceSelector)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('LightSourceSelector'))
+
+
+    #------------------------------------------------------------------------------
+    def set_color_balance_ratio(self, color:str, ratio:int):
+        """set balance ratio of specific color
+
+        Args:
+            color (str): select color to set balance ratio. use pylonFlags.Color flags
+            ratio (int): balance ratio of given color
+        """
+        if self.camera_object.is_node_available('BalanceRatioSelector'):
+            self.__set_value__(color, self.camera_object.camera_device.BalanceRatioSelector)
+
+            if self.camera_object.is_node_available('BalanceRatioRaw'):
+                self.__set_value__(ratio, self.camera_object.camera_device.BalanceRatioRaw)
+            
+            elif self.camera_object.is_node_available('BalanceRatio'):
+                self.__set_value__(ratio, self.camera_object.camera_device.BalanceRatio)
+
+            else:
+                print(ErrorAndWarnings.node_not_avaiable('BalanceRatio'))
+
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('BalanceRatioSelector'))
+
+    def get_color_balance_ratio(self, color:str) -> int:
+        """set balance ratio of specific color
+
+        Args:
+            color (str): select color to set balance ratio. use pylonFlags.Color flags
+            ratio (int): balance ratio of given color
+        """
+        if self.camera_object.is_node_available('BalanceRatioSelector'):
+            self.__set_value__(color, self.camera_object.camera_device.BalanceRatioSelector)
+
+            if self.camera_object.is_node_available('BalanceRatioRaw'):
+                return self.__get_value__( self.camera_object.camera_device.BalanceRatioRaw)
+            
+            elif self.camera_object.is_node_available('BalanceRatio'):
+                return self.__get_value__( self.camera_object.camera_device.BalanceRatio)
+
+            else:
+                print(ErrorAndWarnings.node_not_avaiable('BalanceRatio'))
+
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('BalanceRatioSelector'))
+
+
+    def get_color_balance_ratio_range(self, color:str) -> tuple[int]:
+        """set balance ratio of specific color
+
+        Args:
+            color (str): select color to set balance ratio. use pylonFlags.Color flags
+            ratio (int): balance ratio of given color
+        """
+        if self.camera_object.is_node_available('BalanceRatioSelector'):
+            self.__set_value__(color, self.camera_object.camera_device.BalanceRatioSelector)
+
+            if self.camera_object.is_node_available('BalanceRatioRaw'):
+                return self.__get_value_range__( self.camera_object.camera_device.BalanceRatioRaw)
+            
+            elif self.camera_object.is_node_available('BalanceRatio'):
+                return self.__get_value_range__( self.camera_object.camera_device.BalanceRatio)
+
+            else:
+                print(ErrorAndWarnings.node_not_avaiable('BalanceRatio'))
+
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('BalanceRatioSelector'))
 
 class CameraImageEventHandler(pylon.ImageEventHandler):
     def __init__(self,camera : Camera, *args):
