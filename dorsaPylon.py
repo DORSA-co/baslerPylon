@@ -761,6 +761,46 @@ class CameraParms:
         else:
             print(ErrorAndWarnings.node_not_avaiable())
 
+    def set_height(self, h:int):
+        self.__set_value__(h, self.camera_object.camera_device.Height)
+    
+    def get_height(self,) -> int:
+        return self.__get_value__( self.camera_object.camera_device.Height)
+    
+    def get_height_range(self,) -> tuple[int]:
+        return self.__get_value_range__(self.camera_object.camera_device.Height)
+
+
+
+    def set_width(self, h:int):
+        self.__set_value__(h, self.camera_object.camera_device.Width)
+    
+    def get_width(self,) -> int:
+        return self.__get_value__( self.camera_object.camera_device.Width)
+    
+    def get_width_range(self,) -> tuple[int]:
+        return self.__get_value_range__(self.camera_object.camera_device.Width)
+    
+
+    def set_offset_x(self, h:int):
+        self.__set_value__(h, self.camera_object.camera_device.OffsetX)
+    
+    def get_offset_x(self,) -> int:
+        return self.__get_value__( self.camera_object.camera_device.OffsetX)
+    
+    def get_offset_x_range(self,) -> tuple[int]:
+        return self.__get_value_range__(self.camera_object.camera_device.OffsetX)
+    
+
+    def set_offset_y(self, h:int):
+        self.__set_value__(h, self.camera_object.camera_device.OffsetY)
+    
+    def get_offset_y(self,) -> int:
+        return self.__get_value__( self.camera_object.camera_device.OffsetY)
+    
+    def get_offset_y_range(self,) -> tuple[int]:
+        return self.__get_value_range__(self.camera_object.camera_device.OffsetY)
+
 
     def set_roi(self, height: int, width: int, offset_x: int, offset_y: int) -> None:
         """set roi of camera
@@ -924,12 +964,25 @@ class CameraParms:
     def get_bandwidth_reserve_accumulation_range(self,) -> tuple[int, int]:
         """returns availavbe bandwidth reseve accumulation"""
         return self.__get_value_range__(self.camera_object.camera_device.GevSCBWRA)
+    
+    def set_frame_transmission_delay(self, delay:int):
+        """set frame transmission delay in us"""
+        self.__set_value__(delay, self.camera_object.camera_device.GevSCFTD)
+    
+    def get_frame_transmission_delay(self,) -> int:
+        """returns bandwidth reseve accumulation."""
+        return self.__get_value__(self.camera_object.camera_device.GevSCFTD)
+
+    def get_frame_transmission_delay_range(self,) -> tuple[int, int]:
+        """returns availavbe bandwidth reseve accumulation"""
+        return self.__get_value_range__(self.camera_object.camera_device.GevSCFTD)
 
     def set_transportlayer(self,
                            inter_packet_delay: int, 
                            packet_size: int,
                            bandwidth_reserve:int,
-                           bandwidth_reserve_accumulation:int) -> None:
+                           bandwidth_reserve_accumulation:int,
+                           frame_transmission_delay:int) -> None:
         """set packet_delay and packet_size of camera
 
         Args:
@@ -947,6 +1000,9 @@ class CameraParms:
 
         if inter_packet_delay is not None:
             self.set_inter_packet_delay(inter_packet_delay)
+        
+        if frame_transmission_delay is not None:
+            self.set_frame_transmission_delay(frame_transmission_delay)
 
     
 
