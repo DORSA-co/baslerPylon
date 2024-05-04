@@ -786,6 +786,32 @@ class CameraParms:
 
 
 
+    def set_digital_shift(self, value: int) -> None:
+        """set digital_shift of camera"""
+        if self.camera_object.is_node_available('DigitalShift'):
+            self.__set_value__(value, self.camera_object.camera_device.DigitalShift)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Digital Shift'))
+    
+
+    def get_digital_shift(self) -> int:
+        """get digital_shift of camera"""
+        if self.camera_object.is_node_available('DigitalShift'):
+            return self.__get_value__( self.camera_object.camera_device.DigitalShift)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Digital Shift'))
+
+
+
+    def get_digital_shift_range(self) -> tuple[int, int]:
+        """get allowable range of digital_shift of camera"""
+        if self.camera_object.is_node_available('DigitalShift'):
+            return self.__get_value_range__( self.camera_object.camera_device.DigitalShift)
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Digital Shift'))
+
+
+
     def set_gain(self, gain: int) -> None:
         """set gain of camera"""
         if self.camera_object.is_node_available('Gain'):
@@ -815,6 +841,8 @@ class CameraParms:
             return self.__get_value_range__( self.camera_object.camera_device.GainRaw)
         else:
             print(ErrorAndWarnings.node_not_avaiable('Gain'))
+
+
 
 
 

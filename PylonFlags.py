@@ -52,7 +52,7 @@ class GammaMode:
 class Color:
     Red = 'Red'
     Green = 'Green'
-    Green = 'Green'
+    Blue = 'Blue'
 
 class LightSource:
     Daylight6500K = 'Daylight6500K'
