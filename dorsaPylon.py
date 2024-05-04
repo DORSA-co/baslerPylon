@@ -74,8 +74,8 @@ class ErrorAndWarnings:
         return "ERROR: camera buffer is empty"
 
     @staticmethod
-    def node_not_avaiable():
-        return 'predefine node not available, please set node by its name'
+    def node_not_avaiable(name:str=''):
+        return f'predefine ({name}) node not available, please set node by its name'
 
 
 class Camera:
@@ -485,9 +485,9 @@ class CameraParms:
                         trigge_source=None,
                         trigge_selector = None,
                         gamma_enable = None,
-                        gamma_mode = None,
+                        gamma_selector = None,
                         gamma_value = None, 
-                        black_level_raw = None
+                        black_level = None
                         ):
         """Set commonly used parameters at once
         ** If any parameter is set to `None`, that parameter will not be set on the camera 
@@ -503,13 +503,15 @@ class CameraParms:
         else:
             self.set_trigger_off()
 
+        self.set_gamma_enable(gamma_enable)
+
         if gamma_enable:
-            self.set_gamma_enable(gamma_enable)
-            self.set_gamma_mode(gamma_mode=gamma_mode, gamma_value=gamma_value)
+            self.set_gamma_selector(gamma_selector)
+            self.set_gamma(gamma_value)
         else:
             self.set_gamma_enable(gamma_enable)
         
-        self.set_blacklevelraw(black_level_raw)
+        self.set_blackleve(black_level)
 
 
     def set_node(self, node_name:str, value ):
@@ -584,109 +586,144 @@ class CameraParms:
         Args:
             enable (bool): enable of gamma mode
         """
-        if enable: 
-            self.set_node('GammaEnable', True)
+        if self.camera_object.is_node_available('GammaEnable'):
+            self.__set_value__(enable, self.camera_object.camera_device.GammaEnable)
+
         else:
-            self.set_node('GammaEnable', False)
+            print(ErrorAndWarnings.node_not_avaiable('GammaEnable'))
+
+    def get_gamma_enable(self) -> bool:
+    
+        if self.camera_object.is_node_available('GammaEnable'):
+            self.__get_value__(self.camera_object.camera_device.GammaEnable)
+
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('GammaEnable'))
 
 
-
-
-    def set_gamma_mode(self, gamma_mode : str, gamma_value:float = None):
+    def set_gamma_selector(self, gamma_mode : str):
         """set gamma mode
 
         Args:
-            gamma_mode (str): name of mode
-            gamma_value (float): value for user mode
+            gamma_mode (str): name of mode in PylonFlags.GammaMode
         """
-        if gamma_mode == GammaMode.user.lower():
-            self.set_node('GammaSelector', GammaMode.user)
-            self.set_gamma_value(gamma_value=gamma_value)
-        elif gamma_mode == GammaMode.srgb.lower():
-            self.set_node('GammaSelector', GammaMode.srgb)
+        if self.camera_object.is_node_available('GammaSelector'):
+            self.__set_value__(gamma_mode, self.camera_object.camera_device.GammaSelector)
+
         else:
-            print('Not in defined modes')
+            print(ErrorAndWarnings.node_not_avaiable('Gamma Selector'))
+
+
+    def get_gamma_selector(self,) -> str:
+        """set gamma mode
+
+        Args:
+            gamma_mode (str): name of mode in PylonFlags.GammaMode
+        """
+        if self.camera_object.is_node_available('GammaSelector'):
+            return self.__get_value__(self.camera_object.camera_device.GammaSelector)
+
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Gamma Selector'))
+    
+
+    def available_gamma_selector(self,) -> str:
+        """set gamma mode
+
+        Args:
+            gamma_mode (str): name of mode in PylonFlags.GammaMode
+        """
+        if self.camera_object.is_node_available('GammaSelector'):
+            return self.__get_available_value__(self.camera_object.camera_device.GammaSelector)
+
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Gamma Selector'))
 
     
-    def set_gamma_value(self, gamma_value: float):
+
+    def set_gamma(self, gamma_value: float):
         """set value for gamma user mode
 
         Args:
             gamma_value (float): value for gamma
         """
-
         # get available range for node
-        available_range = self.get_node_range('Gamma')
-        
-        # check if values is in specified range
-        if available_range[0] <= gamma_value <= available_range[1]:
-            self.set_node('Gamma', gamma_value)
-        else:
-            print('entered value is not in acceptable range of gamma values')
-            return
-
-
-    def get_gamma_enable_status(self):
-    
-        if self.camera_object.is_node_available('GammaEnable'):
-            return self.get_node('GammaEnable')
-        else:
-            print(ErrorAndWarnings.node_not_avaiable())
-        return
-    
-    def get_gamma_mode(self):
-        if self.camera_object.is_node_available('GammaSelector'):
-            return self.get_node('GammaSelector')
-        else:
-            print(ErrorAndWarnings.node_not_avaiable())
-        return
-        
-
-    def get_gamma_value(self):
-
         if self.camera_object.is_node_available('Gamma'):
-            if self.get_gamma_mode() == GammaMode.user:
-                return self.get_node('Gamma')
-            else:
-                return
+            self.__set_value__(gamma_value, self.camera_object.camera_device.Gamma)
+        else:
+            print( ErrorAndWarnings.node_not_avaiable('gamma'))
+
+
+    def get_gamma(self) -> float:
+        """returns gamma value
+
+        Returns:
+            float: gamma value
+        """
+        if self.camera_object.is_node_available('Gamma'):
+            return self.__get_value__(self.camera_object.camera_device.Gamma)
     
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
-        return
+            print(ErrorAndWarnings.node_not_avaiable('Gamma'))
+        
 
-    def set_blacklevelraw(self, value:int):
+    def get_gamma_range(self, )-> tuple[float]:
+        if self.camera_object.is_node_available('Gamma'):
+            return self.__get_value_range__(self.camera_object.camera_device.Gamma)
+    
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('Gamma'))
+        
+    
+    
+
+    def set_blacklevel(self, value:int):
         """set black level raw on camera
 
         Args:
             value (int): value of black level
         """
+
         if self.camera_object.is_node_available('BlackLevelRaw'):
-            available_range = self.get_node_range('BlackLevelRaw')
-            if available_range[0] <= value and value <= available_range[1]:
-                self.set_node('BlackLevelRaw', value=value)
-            
-            else:
-                print(ErrorAndWarnings.not_in_range('BlackLevelRaw', available_range[0], available_range[1]))
-                # if smaller then lower, set lower and if higher that max, set max
-                if available_range[0] > value:
-                    self.set_node('BlackLevelRaw', value=available_range[0])
-                else:
-                    self.set_node('BlackLevelRaw', value=available_range[1])
+            self.__set_value__(value, self.camera_object.camera_device.BlackLevelRaw)
+        
+        elif self.camera_object.is_node_available('BlackLevel'):
+            self.__set_value__(value, self.camera_object.camera_device.BlackLevel)
 
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('BlackLevelRaw'))
 
 
-    def get_blacklevelraw(self) -> int:
+    def get_blacklevel(self) -> int:
         """get black level raw
 
         Returns:
             int: value of black level
         """
         if self.camera_object.is_node_available('BlackLevelRaw'):
-            return self.get_node('BlackLevelRaw')
+            return self.__get_value__(self.camera_object.camera_device.BlackLevelRaw)
+        
+        elif self.camera_object.is_node_available('BlackLevel'):
+            return self.__get_value__(self.camera_object.camera_device.BlackLevel)
+        
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('BlackLevel'))
+
+
+    def get_blacklevel_range(self) -> tuple[int]:
+        """get black level raw
+
+        Returns:
+            int: value of black level
+        """
+        if self.camera_object.is_node_available('BlackLevelRaw'):
+            return self.__get_value_range__(self.camera_object.camera_device.BlackLevelRaw)
+        
+        elif self.camera_object.is_node_available('BlackLevel'):
+            return self.__get_value_range__(self.camera_object.camera_device.BlackLevel)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('BlackLevel'))
 
 
 
@@ -697,7 +734,7 @@ class CameraParms:
         elif self.camera_object.is_node_available('GainRaw'):
             self.__set_value__(gain, self.camera_object.camera_device.GainRaw)
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('Gain'))
     
 
     def get_gain(self) -> int:
@@ -707,7 +744,7 @@ class CameraParms:
         elif self.camera_object.is_node_available('GainRaw'):
             return self.__get_value__( self.camera_object.camera_device.GainRaw)
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('Gain'))
 
 
 
@@ -718,7 +755,7 @@ class CameraParms:
         elif self.camera_object.is_node_available('GainRaw'):
             return self.__get_value_range__( self.camera_object.camera_device.GainRaw)
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('Gain'))
 
 
 
@@ -732,7 +769,7 @@ class CameraParms:
             self.__set_value__(exposure, self.camera_object.camera_device.ExposureTimeAbs)
 
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('ExposureTime'))
     
 
 
@@ -745,7 +782,7 @@ class CameraParms:
             return self.__get_value__(self.camera_object.camera_device.ExposureTimeAbs)
         
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('ExposureTime'))
             
 
 
@@ -759,7 +796,7 @@ class CameraParms:
             return self.__get_value_range__(self.camera_object.camera_device.ExposureTimeAbs)
         
         else:
-            print(ErrorAndWarnings.node_not_avaiable())
+            print(ErrorAndWarnings.node_not_avaiable('ExposureTime'))
 
     def set_height(self, h:int):
         self.__set_value__(h, self.camera_object.camera_device.Height)
@@ -849,8 +886,42 @@ class CameraParms:
         offset_y_range = self.__get_value_range__( self.camera_object.camera_device.OffsetY)
         return h_range, w_range, offset_x_range, offset_y_range 
     
+    def set_trigger_delay(self, delay:int):
+        if self.camera_object.is_node_available('TriggerDelayAbs'):
+            self.__set_value__(delay, self.camera_object.camera_device.TriggerDelayAbs)
+        
+        elif self.camera_object.is_node_available('TriggerDelay'):
+            self.__set_value__(delay, self.camera_object.camera_device.TriggerDelay)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('TriggerDelay'))
 
-    def set_trigger_option(self, source: str, selector = Trigger.selector.frame_start) -> None:
+
+    
+    def get_trigger_delay(self, )->int:
+        if self.camera_object.is_node_available('TriggerDelayAbs'):
+            return self.__get_value__(self.camera_object.camera_device.TriggerDelayAbs)
+        
+        elif self.camera_object.is_node_available('TriggerDelay'):
+            return self.__get_value__(self.camera_object.camera_device.TriggerDelay)
+        
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('TriggerDelay'))     
+
+
+    def get_trigger_delay_range(self, )-> tuple[int]:
+        if self.camera_object.is_node_available('TriggerDelayAbs'):
+            return self.__get_value_range__(self.camera_object.camera_device.TriggerDelayAbs)
+        
+        elif self.camera_object.is_node_available('TriggerDelay'):
+            return self.__get_value_range__(self.camera_object.camera_device.TriggerDelay)
+            
+        else:
+            print(ErrorAndWarnings.node_not_avaiable('TriggerDelay'))
+
+    def set_trigger_option(self, source: str, 
+                           selector = Trigger.selector.frame_start,
+                           delay: int = 0) -> None:
         """setup trigger option ( trigger source and trigger selector) 
         Examples:
             >>> camera.Parms.set_trigger_option(Trigger.source.software, Trigger.selector.frame_start)
@@ -864,9 +935,9 @@ class CameraParms:
         self.set_trigger_on()
         self.__set_value__(source, self.camera_object.camera_device.TriggerSource)
         self.__set_value__(selector, self.camera_object.camera_device.TriggerSelector)
+        self.set_trigger_delay(delay)
 
-
-    def get_trigger_option(self) -> tuple[str, str]:
+    def get_trigger_option(self) -> tuple[str, str, int]:
         """return values of TriggerSource and TriggerSelector
 
         Returns:
@@ -874,7 +945,8 @@ class CameraParms:
         """
         source = self.__get_value__(self.camera_object.camera_device.TriggerSource)
         selector = self.__get_value__(self.camera_object.camera_device.TriggerSelector)
-        return source, selector
+        delay = self.get_trigger_delay()
+        return source, selector, delay
 
 
     
