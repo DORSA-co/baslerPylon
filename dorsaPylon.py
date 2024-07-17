@@ -17,7 +17,7 @@ Features:
 ########################################
 """
 from pypylon import pylon
-from PylonFlags import CamersClass, Trigger, PixelType, GammaMode, GetPictureErrors, GrabStrategy
+from .PylonFlags import CamersClass, Trigger, PixelType, GammaMode, GetPictureErrors, GrabStrategy
 import cv2
 import time
 import numpy as np
@@ -99,7 +99,7 @@ class Camera:
         self.nodes_name = self.get_available_nodes()
         
         self.timeout = 5000
-        self.grab_strategy = GrabStrategy.latest_image_only
+        self.grab_strategy = GrabStrategy.latest_image
         self.image = None
         self.error_image = self.build_zero_image(480,640)
 
@@ -1387,9 +1387,13 @@ class Collector:
         """
         self.devices = self.get_available_devices(None)
         for device in self.devices:
-            camera = pylon.InstantCamera(self.__tl_factory.CreateDevice(device))
-            if camera.GetDeviceInfo().GetSerialNumber() == serial_number:
-                return Camera(camera)
+            if device.GetSerialNumber() == serial_number:
+                try:
+                    camera = pylon.InstantCamera(self.__tl_factory.CreateDevice(device))
+                    return Camera(camera)
+                except Exception as e:
+                    print(e)
+                    return None
         return None
 
     def get_all_cameras(self, camera_class=None) -> list[Camera]:
@@ -1410,9 +1414,12 @@ class Collector:
         cameras = []
         for device in self.devices:
             if camera_class is None or device.GetDeviceClass() == camera_class:
-                cameras.append(
-                    Camera(pylon.InstantCamera(self.__tl_factory.CreateDevice(device)))
-                )
+                try:
+                    cameras.append(
+                        Camera(pylon.InstantCamera(self.__tl_factory.CreateDevice(device)))
+                    )
+                except Exception as e:
+                    print(e)
 
         return cameras
         
